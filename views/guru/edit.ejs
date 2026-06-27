@@ -1,0 +1,105 @@
+<%- include("../partials/header",{title:"Edit Guru"}) %>
+
+<%- include("../partials/sidebar") %>
+
+<div class="main">
+
+    <h2 class="mb-4">
+
+        Edit Data Guru
+
+    </h2>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <form action="/guru/update/<%= guru.id %>" method="POST">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>NIP</label>
+
+                        <input
+                            type="text"
+                            name="nip"
+                            class="form-control"
+                            value="<%= guru.nip %>"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Nama Guru</label>
+
+                        <input
+                            type="text"
+                            name="nama"
+                            class="form-control"
+                            value="<%= guru.nama %>"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Email</label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            class="form-control"
+                            value="<%= guru.email %>">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>No HP</label>
+
+                        <input
+                            type="text"
+                            name="hp"
+                            class="form-control"
+                            value="<%= guru.hp %>">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Mata Pelajaran</label>
+
+                        <input
+                            type="text"
+                            name="mapel"
+                            class="form-control"
+                            value="<%= guru.mapel %>">
+
+                    </div>
+
+                </div>
+
+                <button class="btn btn-primary">
+
+                    Update
+
+                </button>
+
+                <a href="/guru" class="btn btn-secondary">
+
+                    Kembali
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../partials/footer") %>

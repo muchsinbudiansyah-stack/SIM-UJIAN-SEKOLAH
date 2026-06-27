@@ -1,0 +1,43 @@
+body{
+    background:#f5f7fb;
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+}
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:250px;
+    height:100vh;
+    background:#0d6efd;
+    color:white;
+    padding:20px;
+}
+
+.sidebar h3{
+    margin-bottom:30px;
+    font-weight:bold;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:6px;
+}
+
+.sidebar a:hover{
+    background:rgba(255,255,255,.15);
+}
+
+.main{
+    margin-left:270px;
+    padding:25px;
+}
+
+.card{
+    border:none;
+    border-radius:15px;
+}

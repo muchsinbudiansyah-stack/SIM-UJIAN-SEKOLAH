@@ -14,7 +14,11 @@ const app = express();
 // MIDDLEWARE
 // ======================================
 
-app.use(helmet());
+app.use(
+    helmet({
+        contentSecurityPolicy: false
+    })
+);
 
 app.use(cors());
 
@@ -22,21 +26,22 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use(session({
-    secret: process.env.SESSION_SECRET || "simujian_secret",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 8
-    }
-}));
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET || "simujian_secret",
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 8
+        }
+    })
+);
 
 // ======================================
 // VIEW ENGINE
 // ======================================
 
 app.set("view engine", "ejs");
-
 app.set("views", path.join(__dirname, "views"));
 
 // ======================================
@@ -55,6 +60,11 @@ app.use(
 const authRoutes = require("./backend/routes/authRoutes");
 const dashboardRoutes = require("./backend/routes/dashboardRoutes");
 const guruRoutes = require("./backend/routes/guruRoutes");
+const kelasRoutes = require("./backend/routes/kelasRoutes");
+const mapelRoutes = require("./backend/routes/mapelRoutes");
+const siswaRoutes = require("./backend/routes/siswaRoutes");
+const bankSoalRoutes = require("./backend/routes/bankSoalRoutes");
+const ujianRoutes = require("./backend/routes/ujianRoutes");
 
 app.use("/", authRoutes);
 
@@ -62,6 +72,15 @@ app.use("/admin/dashboard", dashboardRoutes);
 
 app.use("/guru", guruRoutes);
 
+app.use("/kelas", kelasRoutes);
+
+app.use("/mapel", mapelRoutes);
+
+app.use("/siswa", siswaRoutes);
+
+app.use("/bank-soal", bankSoalRoutes);
+
+app.use("/ujian", ujianRoutes);
 // ======================================
 // SERVER
 // ======================================

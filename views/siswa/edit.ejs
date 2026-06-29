@@ -1,0 +1,184 @@
+<%- include("../partials/header",{title:"Edit Siswa"}) %>
+
+<%- include("../partials/sidebar") %>
+
+<div class="main">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2>Edit Siswa</h2>
+
+            <small class="text-muted">
+
+                Ubah data siswa
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <form action="/siswa/update/<%= siswa.id %>" method="POST">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">NISN</label>
+
+                        <input
+                            type="text"
+                            name="nisn"
+                            class="form-control"
+                            value="<%= siswa.nisn %>"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">Nama Lengkap</label>
+
+                        <input
+                            type="text"
+                            name="nama"
+                            class="form-control"
+                            value="<%= siswa.nama %>"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">Jenis Kelamin</label>
+
+                        <select
+                            name="jenis_kelamin"
+                            class="form-select"
+                            required>
+
+                            <option value="Laki-laki"
+                                <%= siswa.jenis_kelamin==="Laki-laki" ? "selected" : "" %>>
+                                Laki-laki
+                            </option>
+
+                            <option value="Perempuan"
+                                <%= siswa.jenis_kelamin==="Perempuan" ? "selected" : "" %>>
+                                Perempuan
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">Kelas</label>
+
+                        <select
+                            name="kelas_id"
+                            class="form-select"
+                            required>
+
+                            <% kelas.forEach(item=>{ %>
+
+                                <option
+                                    value="<%= item.id %>"
+                                    <%= item.id==siswa.kelas_id ? "selected" : "" %>>
+
+                                    <%= item.nama %>
+
+                                </option>
+
+                            <% }) %>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">Tempat Lahir</label>
+
+                        <input
+                            type="text"
+                            name="tempat_lahir"
+                            class="form-control"
+                            value="<%= siswa.tempat_lahir %>">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">Tanggal Lahir</label>
+
+                        <input
+                            type="date"
+                            name="tanggal_lahir"
+                            class="form-control"
+                            value="<%= siswa.tanggal_lahir %>">
+
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label">Alamat</label>
+
+                        <textarea
+                            name="alamat"
+                            rows="3"
+                            class="form-control"><%= siswa.alamat %></textarea>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">Nomor HP</label>
+
+                        <input
+                            type="text"
+                            name="no_hp"
+                            class="form-control"
+                            value="<%= siswa.no_hp %>">
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    <i class="bi bi-save"></i>
+
+                    Update
+
+                </button>
+
+                <a
+                    href="/siswa"
+                    class="btn btn-secondary">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                    Kembali
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../partials/footer") %>

@@ -9,22 +9,24 @@
         <div>
 
             <h2 class="mb-1">
+
                 Dashboard Administrator
+
             </h2>
 
             <p class="text-muted mb-0">
+
                 Selamat datang di SIM-UJIAN SEKOLAH
+
             </p>
 
         </div>
 
-        <div>
+        <span class="badge bg-primary fs-6">
 
-            <span class="badge bg-primary fs-6">
-                CBT v1.0
-            </span>
+            CBT v1.0
 
-        </div>
+        </span>
 
     </div>
 
@@ -37,15 +39,17 @@
 
                 <div class="card-body">
 
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between">
 
                         <div>
 
                             <small class="text-muted">
+
                                 Guru
+
                             </small>
 
-                            <h2 class="mt-2 text-primary">
+                            <h2 class="text-primary mt-2">
 
                                 <%= totalGuru %>
 
@@ -74,15 +78,17 @@
 
                 <div class="card-body">
 
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between">
 
                         <div>
 
                             <small class="text-muted">
+
                                 Siswa
+
                             </small>
 
-                            <h2 class="mt-2 text-success">
+                            <h2 class="text-success mt-2">
 
                                 <%= totalSiswa %>
 
@@ -111,15 +117,17 @@
 
                 <div class="card-body">
 
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between">
 
                         <div>
 
                             <small class="text-muted">
+
                                 Kelas
+
                             </small>
 
-                            <h2 class="mt-2 text-warning">
+                            <h2 class="text-warning mt-2">
 
                                 <%= totalKelas %>
 
@@ -141,24 +149,26 @@
 
         </div>
 
-        <!-- BANK SOAL -->
+        <!-- MAPEL -->
         <div class="col-md-3 mb-4">
 
             <div class="card shadow-sm border-0">
 
                 <div class="card-body">
 
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between">
 
                         <div>
 
                             <small class="text-muted">
-                                Bank Soal
+
+                                Mata Pelajaran
+
                             </small>
 
-                            <h2 class="mt-2 text-danger">
+                            <h2 class="text-danger mt-2">
 
-                                <%= totalSoal %>
+                                <%= totalMapel %>
 
                             </h2>
 
@@ -166,7 +176,7 @@
 
                         <div class="text-danger fs-1">
 
-                            <i class="bi bi-journal-text"></i>
+                            <i class="bi bi-book-half"></i>
 
                         </div>
 
@@ -185,15 +195,16 @@
         <div class="card-body">
 
             <h5>
-                Selamat Datang
+
+                Informasi Sistem
+
             </h5>
 
             <p class="text-muted mb-0">
 
-                Dashboard ini menampilkan ringkasan data aplikasi.
-                Jumlah Guru sudah dihitung langsung dari database SQLite.
-                Selanjutnya kita akan membuat jumlah Siswa, Kelas,
-                Mata Pelajaran, dan Bank Soal menjadi dinamis juga.
+                Dashboard sekarang sudah mengambil jumlah Guru, Kelas, dan Mata Pelajaran langsung dari database SQLite.
+
+                Selanjutnya kita akan menghubungkan jumlah Siswa, Bank Soal, Ujian, dan Hasil secara otomatis.
 
             </p>
 

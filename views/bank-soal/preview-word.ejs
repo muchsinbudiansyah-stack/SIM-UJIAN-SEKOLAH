@@ -1,0 +1,203 @@
+<%- include("../partials/header",{title:"Preview Import Word"}) %>
+
+<%- include("../partials/sidebar") %>
+
+<div class="main">
+
+    <h2 class="mb-4">
+
+        Preview Import Soal
+
+    </h2>
+
+    <div class="alert alert-info">
+
+        Jumlah Soal :
+
+        <strong>
+
+            <%= hasilValidasi.length %>
+
+        </strong>
+
+    </div>
+
+    <form action="/bank-soal/import-database" method="POST">
+
+        <div class="row mb-4">
+
+            <div class="col-md-6">
+
+                <label>Mata Pelajaran</label>
+
+                <select
+                    name="mapel_id"
+                    class="form-select"
+                    required>
+
+                    <% mapel.forEach(item=>{ %>
+
+                        <option value="<%= item.id %>">
+
+                            <%= item.nama_mapel %>
+
+                        </option>
+
+                    <% }) %>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label>Guru</label>
+
+                <select
+                    name="guru_id"
+                    class="form-select"
+                    required>
+
+                    <% guru.forEach(item=>{ %>
+
+                        <option value="<%= item.id %>">
+
+                            <%= item.nama %>
+
+                        </option>
+
+                    <% }) %>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <% hasilValidasi.forEach((item,index)=>{ %>
+
+            <div class="card shadow-sm mb-4">
+
+                <div class="card-header">
+
+                    <strong>
+
+                        Soal <%= index+1 %>
+
+                    </strong>
+
+                    <% if(item.valid){ %>
+
+                        <span class="badge bg-success">
+
+                            VALID
+
+                        </span>
+
+                    <% } else { %>
+
+                        <span class="badge bg-danger">
+
+                            ERROR
+
+                        </span>
+
+                    <% } %>
+
+                </div>
+
+                <div class="card-body">
+
+                    <p>
+
+                        <%= item.data.pertanyaan %>
+
+                    </p>
+
+                    <% if(item.data.jenis==="PG"){ %>
+
+                        <ol type="A">
+
+                            <li><%= item.data.pilihan_a %></li>
+
+                            <li><%= item.data.pilihan_b %></li>
+
+                            <li><%= item.data.pilihan_c %></li>
+
+                            <li><%= item.data.pilihan_d %></li>
+
+                            <li><%= item.data.pilihan_e %></li>
+
+                        </ol>
+
+                    <% } %>
+
+                    <p>
+
+                        <strong>Jenis :</strong>
+
+                        <%= item.data.jenis %>
+
+                    </p>
+
+                    <p>
+
+                        <strong>Jawaban :</strong>
+
+                        <%= item.data.jawaban %>
+
+                    </p>
+
+                    <p>
+
+                        <strong>Bobot :</strong>
+
+                        <%= item.data.bobot %>
+
+                    </p>
+
+                    <% if(!item.valid){ %>
+
+                        <div class="alert alert-danger">
+
+                            <ul>
+
+                                <% item.error.forEach(err=>{ %>
+
+                                    <li><%= err %></li>
+
+                                <% }) %>
+
+                            </ul>
+
+                        </div>
+
+                    <% } %>
+
+                </div>
+
+            </div>
+
+        <% }) %>
+
+        <button
+            type="submit"
+            class="btn btn-success">
+
+            Import ke Database
+
+        </button>
+
+        <a
+            href="/bank-soal/import-word"
+            class="btn btn-secondary">
+
+            Kembali
+
+        </a>
+
+    </form>
+
+</div>
+
+<%- include("../partials/footer") %>

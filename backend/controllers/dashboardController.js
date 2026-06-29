@@ -1,18 +1,33 @@
 const guruModel = require("../models/guruModel");
+const kelasModel = require("../models/kelasModel");
+const mapelModel = require("../models/mapelModel");
 
 exports.index = async (req, res) => {
 
     try {
 
-        // Hitung jumlah guru
+        // ======================================
+        // HITUNG DATA DASHBOARD
+        // ======================================
+
         const totalGuru = await guruModel.count();
 
-        // Data dashboard
+        const totalKelas = await kelasModel.count();
+
+        const totalMapel = await mapelModel.count();
+
+        // ======================================
+        // TAMPILKAN DASHBOARD
+        // ======================================
+
         res.render("admin/dashboard", {
 
-            totalGuru: totalGuru,
+            totalGuru,
+            totalKelas,
+            totalMapel,
+
+            // sementara
             totalSiswa: 0,
-            totalKelas: 0,
             totalSoal: 0
 
         });

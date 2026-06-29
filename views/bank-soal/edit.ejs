@@ -1,0 +1,242 @@
+<%- include("../partials/header",{title:"Edit Soal"}) %>
+
+<%- include("../partials/sidebar") %>
+
+<div class="main">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2>Edit Soal</h2>
+
+            <small class="text-muted">
+
+                Ubah data soal
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <form action="/bank-soal/update/<%= soal.id %>" method="POST">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">Mata Pelajaran</label>
+
+                        <select name="mapel_id" class="form-select" required>
+
+                            <% mapel.forEach(item=>{ %>
+
+                                <option
+                                    value="<%= item.id %>"
+                                    <%= item.id==soal.mapel_id ? "selected" : "" %>>
+
+                                    <%= item.nama_mapel %>
+
+                                </option>
+
+                            <% }) %>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">Guru</label>
+
+                        <select name="guru_id" class="form-select" required>
+
+                            <% guru.forEach(item=>{ %>
+
+                                <option
+                                    value="<%= item.id %>"
+                                    <%= item.id==soal.guru_id ? "selected" : "" %>>
+
+                                    <%= item.nama %>
+
+                                </option>
+
+                            <% }) %>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label>Jenis Soal</label>
+
+                        <select name="jenis" class="form-select">
+
+                            <option value="PG" <%= soal.jenis=="PG" ? "selected":"" %>>Pilihan Ganda</option>
+
+                            <option value="Essay" <%= soal.jenis=="Essay" ? "selected":"" %>>Essay</option>
+
+                            <option value="Benar Salah" <%= soal.jenis=="Benar Salah" ? "selected":"" %>>Benar / Salah</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label>Bobot</label>
+
+                        <input
+                            type="number"
+                            name="bobot"
+                            class="form-control"
+                            value="<%= soal.bobot %>">
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label>Status</label>
+
+                        <select
+                            name="status"
+                            class="form-select">
+
+                            <option value="1" <%= soal.status==1 ? "selected":"" %>>
+
+                                Aktif
+
+                            </option>
+
+                            <option value="0" <%= soal.status==0 ? "selected":"" %>>
+
+                                Nonaktif
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+
+                        <label>Pertanyaan</label>
+
+                        <textarea
+                            name="pertanyaan"
+                            rows="5"
+                            class="form-control"><%= soal.pertanyaan %></textarea>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Pilihan A</label>
+
+                        <input
+                            type="text"
+                            name="pilihan_a"
+                            class="form-control"
+                            value="<%= soal.pilihan_a %>">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Pilihan B</label>
+
+                        <input
+                            type="text"
+                            name="pilihan_b"
+                            class="form-control"
+                            value="<%= soal.pilihan_b %>">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Pilihan C</label>
+
+                        <input
+                            type="text"
+                            name="pilihan_c"
+                            class="form-control"
+                            value="<%= soal.pilihan_c %>">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Pilihan D</label>
+
+                        <input
+                            type="text"
+                            name="pilihan_d"
+                            class="form-control"
+                            value="<%= soal.pilihan_d %>">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Pilihan E</label>
+
+                        <input
+                            type="text"
+                            name="pilihan_e"
+                            class="form-control"
+                            value="<%= soal.pilihan_e %>">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Jawaban Benar</label>
+
+                        <select
+                            name="jawaban"
+                            class="form-select">
+
+                            <option value="A" <%= soal.jawaban=="A"?"selected":"" %>>A</option>
+                            <option value="B" <%= soal.jawaban=="B"?"selected":"" %>>B</option>
+                            <option value="C" <%= soal.jawaban=="C"?"selected":"" %>>C</option>
+                            <option value="D" <%= soal.jawaban=="D"?"selected":"" %>>D</option>
+                            <option value="E" <%= soal.jawaban=="E"?"selected":"" %>>E</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <button type="submit" class="btn btn-primary">
+
+                    <i class="bi bi-save"></i>
+
+                    Update Soal
+
+                </button>
+
+                <a href="/bank-soal" class="btn btn-secondary">
+
+                    Kembali
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../partials/footer") %>

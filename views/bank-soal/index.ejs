@@ -1,0 +1,188 @@
+<%- include("../partials/header",{title:"Bank Soal"}) %>
+
+<%- include("../partials/sidebar") %>
+
+<div class="main">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2>Bank Soal</h2>
+
+            <small class="text-muted">
+
+                Kelola seluruh soal ujian sekolah
+
+            </small>
+
+        </div>
+
+        <div>
+
+            <a
+                href="/bank-soal/tambah"
+                class="btn btn-primary">
+
+                <i class="bi bi-plus-circle"></i>
+
+                Tambah Soal
+
+            </a>
+
+            <a
+                href="/bank-soal/import-word"
+                class="btn btn-success">
+
+                <i class="bi bi-file-earmark-word"></i>
+
+                Import Word
+
+            </a>
+
+            <button
+                class="btn btn-secondary"
+                disabled>
+
+                <i class="bi bi-file-earmark-excel"></i>
+
+                Import Excel
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead class="table-primary">
+
+                    <tr>
+
+                        <th width="60">No</th>
+
+                        <th>Mata Pelajaran</th>
+
+                        <th>Guru</th>
+
+                        <th>Jenis</th>
+
+                        <th>Bobot</th>
+
+                        <th>Status</th>
+
+                        <th width="200">Aksi</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                <% if(soal.length===0){ %>
+
+                    <tr>
+
+                        <td colspan="7" class="text-center">
+
+                            Belum ada soal.
+
+                        </td>
+
+                    </tr>
+
+                <% } %>
+
+                <% soal.forEach((item,index)=>{ %>
+
+                    <tr>
+
+                        <td><%= index+1 %></td>
+
+                        <td><%= item.nama_mapel %></td>
+
+                        <td><%= item.nama %></td>
+
+                        <td>
+
+                            <span class="badge bg-primary">
+
+                                <%= item.jenis %>
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <%= item.bobot %>
+
+                        </td>
+
+                        <td>
+
+                            <% if(item.status==1){ %>
+
+                                <span class="badge bg-success">
+
+                                    Aktif
+
+                                </span>
+
+                            <% } else { %>
+
+                                <span class="badge bg-secondary">
+
+                                    Nonaktif
+
+                                </span>
+
+                            <% } %>
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="/bank-soal/edit/<%= item.id %>"
+                                class="btn btn-warning btn-sm">
+
+                                <i class="bi bi-pencil-square"></i>
+
+                                Edit
+
+                            </a>
+
+                            <a
+                                href="/bank-soal/hapus/<%= item.id %>"
+                                class="btn btn-danger btn-sm"
+                                onclick="return confirm('Yakin ingin menghapus soal ini?')">
+
+                                <i class="bi bi-trash"></i>
+
+                                Hapus
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                <% }) %>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../partials/footer") %>

@@ -1,0 +1,454 @@
+<%- include("../partials/header",{title:"Tambah Soal"}) %>
+
+<%- include("../partials/sidebar") %>
+
+<div class="main">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<div>
+
+<h2>
+
+Tambah Soal
+
+</h2>
+
+<small class="text-muted">
+
+Bank Soal SIM-UJIAN SEKOLAH
+
+</small>
+
+</div>
+
+</div>
+
+<div class="card shadow-sm">
+
+<div class="card-body">
+
+<form action="/bank-soal/simpan" method="POST">
+
+<div class="row">
+
+<div class="col-md-6 mb-3">
+
+<label class="form-label">
+
+Mata Pelajaran
+
+</label>
+
+<select
+name="mapel_id"
+class="form-select"
+required>
+
+<option value="">
+
+-- Pilih Mata Pelajaran --
+
+</option>
+
+<% mapel.forEach(item=>{ %>
+
+<option value="<%= item.id %>">
+
+<%= item.nama_mapel %>
+
+</option>
+
+<% }) %>
+
+</select>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label class="form-label">
+
+Guru
+
+</label>
+
+<select
+name="guru_id"
+class="form-select"
+required>
+
+<option value="">
+
+-- Pilih Guru --
+
+</option>
+
+<% guru.forEach(item=>{ %>
+
+<option value="<%= item.id %>">
+
+<%= item.nama %>
+
+</option>
+
+<% }) %>
+
+</select>
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label class="form-label">
+
+Jenis Soal
+
+</label>
+
+<select
+id="jenisSoal"
+name="jenis"
+class="form-select">
+
+<option value="PG">
+
+Pilihan Ganda
+
+</option>
+
+<option value="ESSAY">
+
+Essay
+
+</option>
+
+<option value="BS">
+
+Benar / Salah
+
+</option>
+
+</select>
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>
+
+Bobot Nilai
+
+</label>
+
+<input
+type="number"
+name="bobot"
+value="1"
+min="1"
+class="form-control">
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>
+
+Status
+
+</label>
+
+<select
+name="status"
+class="form-select">
+
+<option value="1">
+
+Aktif
+
+</option>
+
+<option value="0">
+
+Nonaktif
+
+</option>
+
+</select>
+
+</div>
+
+<div class="col-md-12 mb-4">
+
+<label>
+
+Pertanyaan
+
+</label>
+
+<textarea
+id="editorSoal"
+    name="pertanyaan"
+    rows="8"
+    class="form-control"
+    required></textarea>
+
+</div>
+
+<!-- ================================================= -->
+<!-- PILIHAN GANDA -->
+<!-- ================================================= -->
+
+<div
+id="formPG"
+class="row">
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+Pilihan A
+
+</label>
+
+<input
+type="text"
+name="pilihan_a"
+class="form-control">
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+Pilihan B
+
+</label>
+
+<input
+type="text"
+name="pilihan_b"
+class="form-control">
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+Pilihan C
+
+</label>
+
+<input
+type="text"
+name="pilihan_c"
+class="form-control">
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+Pilihan D
+
+</label>
+
+<input
+type="text"
+name="pilihan_d"
+class="form-control">
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+Pilihan E
+
+</label>
+
+<input
+type="text"
+name="pilihan_e"
+class="form-control">
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+Jawaban Benar
+
+</label>
+
+<select
+name="jawaban"
+class="form-select">
+
+<option value="A">A</option>
+
+<option value="B">B</option>
+
+<option value="C">C</option>
+
+<option value="D">D</option>
+
+<option value="E">E</option>
+
+</select>
+
+</div>
+
+</div>
+
+<!-- ============================================== -->
+<!-- ESSAY -->
+<!-- ============================================== -->
+
+<div
+    id="formEssay"
+    class="row"
+    style="display:none;">
+
+    <div class="col-md-12">
+
+        <div class="alert alert-info">
+
+            <strong>Soal Essay</strong>
+
+            <hr>
+
+            Untuk soal Essay cukup isi pertanyaan.
+
+            Pilihan jawaban tidak diperlukan.
+
+            Penilaian akan dilakukan oleh guru.
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ============================================== -->
+<!-- BENAR / SALAH -->
+<!-- ============================================== -->
+
+<div
+    id="formBS"
+    class="row"
+    style="display:none;">
+
+    <div class="col-md-12 mb-3">
+
+        <label>
+
+            Jawaban Benar
+
+        </label>
+
+        <select
+            name="jawaban_bs"
+            class="form-select">
+
+            <option value="BENAR">
+
+                Benar
+
+            </option>
+
+            <option value="SALAH">
+
+                Salah
+
+            </option>
+
+        </select>
+
+    </div>
+
+</div>
+
+<!-- ============================================== -->
+<!-- GAMBAR -->
+<!-- ============================================== -->
+
+<div class="row">
+
+    <div class="col-md-12 mb-4">
+
+        <label>
+
+            Gambar Soal
+            (Opsional)
+
+        </label>
+
+        <input
+            type="file"
+            class="form-control"
+            disabled>
+
+        <small class="text-muted">
+
+            Upload gambar akan kita aktifkan
+            pada tahap berikutnya.
+
+        </small>
+
+    </div>
+
+</div>
+
+<hr>
+
+<div class="d-flex gap-2">
+
+    <button
+        type="submit"
+        class="btn btn-primary">
+
+        <i class="bi bi-save"></i>
+
+        Simpan Soal
+
+    </button>
+
+    <a
+        href="/bank-soal"
+        class="btn btn-secondary">
+
+        Kembali
+
+    </a>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
+<script src="/assets/js/bank-soal.js"></script>
+
+<script>
+
+ClassicEditor
+    .create(document.querySelector("#editorSoal"))
+    .catch(error => {
+        console.error(error);
+    });
+
+</script>
+
+<%- include("../partials/footer") %>

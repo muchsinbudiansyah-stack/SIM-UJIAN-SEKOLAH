@@ -1,0 +1,95 @@
+<%- include("../partials/header",{title:"Import Soal Word"}) %>
+
+<%- include("../partials/sidebar") %>
+
+<div class="main">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2>Import Soal Microsoft Word</h2>
+
+            <small class="text-muted">
+
+                Upload file .docx untuk diubah menjadi Bank Soal
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <form
+                action="/bank-soal/import-word"
+                method="POST"
+                enctype="multipart/form-data">
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+
+                        File Microsoft Word (.docx)
+
+                    </label>
+
+                    <input
+                        type="file"
+                        name="fileWord"
+                        accept=".docx"
+                        class="form-control"
+                        required>
+
+                </div>
+
+                <div class="alert alert-info">
+
+                    <strong>Format yang didukung:</strong>
+
+                    <hr>
+
+<pre>
+SOAL:
+Hasil dari 2 + 3 adalah...
+
+A. 4
+B. 5
+C. 6
+D. 7
+E. 8
+
+JAWABAN: B
+
+BOBOT: 1
+</pre>
+
+                </div>
+
+                <button
+                    class="btn btn-primary">
+
+                    Upload & Preview
+
+                </button>
+
+                <a
+                    href="/bank-soal"
+                    class="btn btn-secondary">
+
+                    Kembali
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../partials/footer") %>

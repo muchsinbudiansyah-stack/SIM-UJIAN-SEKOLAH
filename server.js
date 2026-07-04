@@ -72,6 +72,7 @@ const bankSoalRoutes = require("./backend/routes/bankSoalRoutes");
 const ujianRoutes = require("./backend/routes/ujianRoutes");
 const uploadRoutes = require("./backend/routes/uploadRoutes");
 const hasilRoutes = require('./backend/routes/hasilRoutes');
+const pesertaRoutes=require("./backend/routes/pesertaRoutes");
 
 app.use("/", authRoutes);
 
@@ -92,6 +93,8 @@ app.use("/ujian", ujianRoutes);
 app.use("/upload", uploadRoutes);
 
 app.use('/hasil', hasilRoutes);
+
+app.use("/peserta",pesertaRoutes);
 // ======================================
 // SERVER
 // ======================================

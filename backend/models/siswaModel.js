@@ -1,4 +1,5 @@
 const db = require("../config/database");
+const bcrypt = require("bcrypt");
 
 // ======================================
 // TAMPILKAN SEMUA SISWA
@@ -91,46 +92,107 @@ exports.getKelas = () => {
 // ======================================
 exports.create = (data) => {
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
 
-        db.run(
-            `
-            INSERT INTO siswa
-            (
-                nisn,
-                nama,
-                jenis_kelamin,
-                kelas_id,
-                tempat_lahir,
-                tanggal_lahir,
-                alamat,
-                no_hp,
-                foto
-            )
-            VALUES (?,?,?,?,?,?,?,?,?)
-            `,
-            [
-                data.nisn,
-                data.nama,
-                data.jenis_kelamin,
-                data.kelas_id,
-                data.tempat_lahir,
-                data.tanggal_lahir,
-                data.alamat,
-                data.no_hp,
-                data.foto
-            ],
-            function (err) {
+        try {
 
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(this.lastID);
-                }
+            const password = await bcrypt.hash(data.nisn, 10);
 
-            }
+            db.serialize(() => {
 
-        );
+                db.run("BEGIN TRANSACTION");
+
+                db.run(
+
+                    `
+                    INSERT INTO users
+                    (
+                        username,
+                        password,
+                        role
+                    )
+                    VALUES (?,?,?)
+                    `,
+                    [
+                        data.nisn,
+                        password,
+                        "siswa"
+                    ],
+                    function(err){
+
+                        if(err){
+
+                            db.run("ROLLBACK");
+
+                            return reject(err);
+
+                        }
+
+                        db.run(
+
+                            `
+                            INSERT INTO siswa
+                            (
+                                nisn,
+                                nama,
+                                jenis_kelamin,
+                                kelas_id,
+                                tempat_lahir,
+                                tanggal_lahir,
+                                alamat,
+                                no_hp,
+                                foto
+                            )
+
+                            VALUES
+                            (?,?,?,?,?,?,?,?,?)
+                            `,
+
+                            [
+
+                                data.nisn,
+                                data.nama,
+                                data.jenis_kelamin,
+                                data.kelas_id,
+                                data.tempat_lahir,
+                                data.tanggal_lahir,
+                                data.alamat,
+                                data.no_hp,
+                                data.foto
+
+                            ],
+
+                            function(err){
+
+                                if(err){
+
+                                    db.run("ROLLBACK");
+
+                                    return reject(err);
+
+                                }
+
+                                db.run("COMMIT");
+
+                                resolve(this.lastID);
+
+                            }
+
+                        );
+
+                    }
+
+                );
+
+            });
+
+        }
+
+        catch(err){
+
+            reject(err);
+
+        }
 
     });
 

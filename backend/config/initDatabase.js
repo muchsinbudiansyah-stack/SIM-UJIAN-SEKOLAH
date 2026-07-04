@@ -198,6 +198,37 @@ db.run(`
     )
 `);
 
+// ==========================================
+// JAWABAN SISWA
+// ==========================================
+db.run(`
+CREATE TABLE IF NOT EXISTS jawaban_siswa (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    ujian_id INTEGER NOT NULL,
+
+    siswa_id INTEGER NOT NULL,
+
+    soal_id INTEGER NOT NULL,
+
+    jawaban TEXT,
+
+    benar INTEGER DEFAULT 0,
+
+    nilai REAL DEFAULT 0,
+
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY(ujian_id) REFERENCES ujian(id),
+
+    FOREIGN KEY(siswa_id) REFERENCES siswa(id),
+
+    FOREIGN KEY(soal_id) REFERENCES bank_soal(id)
+
+)
+`);
+
     console.log("Database berhasil diinisialisasi.");
 
 });

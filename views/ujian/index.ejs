@@ -43,6 +43,7 @@
                         <th>Guru</th>
                         <th>Durasi</th>
                         <th>Status</th>
+                        <th>Peserta</th>
                         <th width="200">Aksi</th>
 
                     </tr>
@@ -82,6 +83,11 @@
                         <td><%= item.durasi %> Menit</td>
 
                         <td>
+                            <td>
+            <a href="/ujian/peserta/<%= item.id %>" class="btn btn-info btn-sm">
+                <i class="bi bi-people"></i> Peserta
+            </a>
+        </td>
 
                             <% if(item.status==1){ %>
 

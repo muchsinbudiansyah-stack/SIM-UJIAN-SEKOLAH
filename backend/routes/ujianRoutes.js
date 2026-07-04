@@ -16,6 +16,15 @@ router.get(
 );
 
 // ======================================
+// PESERTA UJIAN
+// ======================================
+router.get(
+    "/peserta/:id",
+    auth.isAuthenticated,
+    ujianController.listPeserta
+);
+
+// ======================================
 // FORM TAMBAH
 // ======================================
 router.get(

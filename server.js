@@ -53,6 +53,11 @@ app.use(
     express.static(path.join(__dirname, "frontend/assets"))
 );
 
+app.use(
+    "/uploads",
+    express.static(path.join(__dirname, "uploads"))
+);
+
 // ======================================
 // ROUTES
 // ======================================
@@ -65,6 +70,8 @@ const mapelRoutes = require("./backend/routes/mapelRoutes");
 const siswaRoutes = require("./backend/routes/siswaRoutes");
 const bankSoalRoutes = require("./backend/routes/bankSoalRoutes");
 const ujianRoutes = require("./backend/routes/ujianRoutes");
+const uploadRoutes = require("./backend/routes/uploadRoutes");
+const hasilRoutes = require('./backend/routes/hasilRoutes');
 
 app.use("/", authRoutes);
 
@@ -81,6 +88,10 @@ app.use("/siswa", siswaRoutes);
 app.use("/bank-soal", bankSoalRoutes);
 
 app.use("/ujian", ujianRoutes);
+
+app.use("/upload", uploadRoutes);
+
+app.use('/hasil', hasilRoutes);
 // ======================================
 // SERVER
 // ======================================

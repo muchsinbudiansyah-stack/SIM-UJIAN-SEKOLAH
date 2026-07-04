@@ -28,7 +28,10 @@ Bank Soal SIM-UJIAN SEKOLAH
 
 <div class="card-body">
 
-<form action="/bank-soal/simpan" method="POST">
+<form
+    action="/bank-soal/simpan"
+    method="POST"
+    enctype="multipart/form-data">
 
 <div class="row">
 
@@ -187,11 +190,10 @@ Pertanyaan
 </label>
 
 <textarea
-id="editorSoal"
+    id="editorSoal"
     name="pertanyaan"
     rows="8"
-    class="form-control"
-    required></textarea>
+    class="form-control"></textarea>
 
 </div>
 
@@ -390,16 +392,21 @@ class="form-select">
         </label>
 
         <input
-            type="file"
-            class="form-control"
-            disabled>
+    type="file"
+    id="gambarSoal"
+    name="gambar"
+    accept=".jpg,.jpeg,.png,.webp"
+    class="form-control">
 
-        <small class="text-muted">
+        <div class="mt-3">
 
-            Upload gambar akan kita aktifkan
-            pada tahap berikutnya.
+    <img
+        id="previewGambar"
+        src=""
+        class="img-fluid rounded border"
+        style="display:none;max-height:250px;">
 
-        </small>
+</div>
 
     </div>
 
@@ -410,8 +417,9 @@ class="form-select">
 <div class="d-flex gap-2">
 
     <button
-        type="submit"
-        class="btn btn-primary">
+    type="submit"
+    formnovalidate
+    class="btn btn-primary">
 
         <i class="bi bi-save"></i>
 
@@ -437,17 +445,70 @@ class="form-select">
 
 </div>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script src="/assets/tinymce/tinymce.min.js"></script>
 
 <script src="/assets/js/bank-soal.js"></script>
 
 <script>
 
-ClassicEditor
-    .create(document.querySelector("#editorSoal"))
-    .catch(error => {
-        console.error(error);
-    });
+let editorSoal;
+
+tinymce.init({
+
+    license_key: 'gpl',
+
+    selector: '#editorSoal',
+
+    height: 450,
+
+    menubar: true,
+
+    branding: false,
+
+    promotion: false,
+
+    plugins: [
+    'lists',
+    'table',
+    'link',
+    'image',
+    'code',
+    'fullscreen',
+    'preview'
+],
+
+automatic_uploads: true,
+
+images_upload_url: '/upload/editor-image',
+
+images_upload_credentials: true,
+
+    toolbar:
+'undo redo | blocks | bold italic underline | ' +
+'alignleft aligncenter alignright | ' +
+'bullist numlist | table | ' +
+'image link | ' +
+'code preview fullscreen',
+
+    setup: function (editor) {
+
+        editorSoal = editor;
+
+    }
+
+});
+
+// ======================================
+// SIMPAN ISI EDITOR KE TEXTAREA
+// ======================================
+
+document.querySelector("form").addEventListener("submit", function(e){
+
+    console.log("FORM DIKIRIM");
+
+    tinymce.triggerSave();
+
+});
 
 </script>
 

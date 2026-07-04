@@ -54,135 +54,43 @@
 
     </div>
 
-    <div class="card shadow-sm">
-
-        <div class="card-body">
-
-            <table class="table table-bordered table-hover align-middle">
-
-                <thead class="table-primary">
-
-                    <tr>
-
-                        <th width="60">No</th>
-
-                        <th>Mata Pelajaran</th>
-
-                        <th>Guru</th>
-
-                        <th>Jenis</th>
-
-                        <th>Bobot</th>
-
-                        <th>Status</th>
-
-                        <th width="200">Aksi</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                <% if(soal.length===0){ %>
-
-                    <tr>
-
-                        <td colspan="7" class="text-center">
-
-                            Belum ada soal.
-
-                        </td>
-
-                    </tr>
-
-                <% } %>
-
-                <% soal.forEach((item,index)=>{ %>
-
-                    <tr>
-
-                        <td><%= index+1 %></td>
-
-                        <td><%= item.nama_mapel %></td>
-
-                        <td><%= item.nama %></td>
-
-                        <td>
-
-                            <span class="badge bg-primary">
-
-                                <%= item.jenis %>
-
-                            </span>
-
-                        </td>
-
-                        <td>
-
-                            <%= item.bobot %>
-
-                        </td>
-
-                        <td>
-
-                            <% if(item.status==1){ %>
-
-                                <span class="badge bg-success">
-
-                                    Aktif
-
-                                </span>
-
-                            <% } else { %>
-
-                                <span class="badge bg-secondary">
-
-                                    Nonaktif
-
-                                </span>
-
-                            <% } %>
-
-                        </td>
-
-                        <td>
-
-                            <a
-                                href="/bank-soal/edit/<%= item.id %>"
-                                class="btn btn-warning btn-sm">
-
-                                <i class="bi bi-pencil-square"></i>
-
-                                Edit
-
-                            </a>
-
-                            <a
-                                href="/bank-soal/hapus/<%= item.id %>"
-                                class="btn btn-danger btn-sm"
-                                onclick="return confirm('Yakin ingin menghapus soal ini?')">
-
-                                <i class="bi bi-trash"></i>
-
-                                Hapus
-
-                            </a>
-
-                        </td>
-
-                    </tr>
-
-                <% }) %>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
+    <!-- Grid Folder Mata Pelajaran -->
+    <div class="row">
+        <% if(typeof mapel !== 'undefined' && mapel.length > 0) { %>
+            <% mapel.forEach((item, index) => { %>
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100 shadow-sm border-0 folder-card bg-white">
+                        <div class="card-body text-center p-4">
+                            <!-- Icon Folder -->
+                            <i class="bi bi-folder-fill text-warning" style="font-size: 4rem;"></i>
+                            <h5 class="card-title mt-3 text-dark fw-bold"><%= item.nama_mapel %></h5>
+                            <!-- Link yang membungkus seluruh area card -->
+                            <a href="/bank-soal/mapel/<%= item.id %>" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="col-12">
+                <div class="alert alert-secondary text-center">
+                    <i class="bi bi-info-circle me-2"></i> Belum ada data Mata Pelajaran.
+                </div>
+            </div>
+        <% } %>
     </div>
 
-</div>
+    <!-- CSS tambahan untuk efek folder -->
+    <style>
+        .folder-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+        .folder-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+            background-color: #f8f9fa !important;
+        }
+    </style>
 
 <%- include("../partials/footer") %>

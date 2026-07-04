@@ -3,6 +3,7 @@ const router = express.Router();
 
 const auth = require("../middleware/auth");
 const bankSoalController = require("../controllers/bankSoalController");
+const uploadSoal = require("../middleware/uploadSoal");
 
 const multer = require("multer");
 const path = require("path");
@@ -74,6 +75,12 @@ router.get(
     bankSoalController.index
 );
 
+router.get(
+    "/mapel/:id",
+    auth.isAuthenticated,
+    bankSoalController.getByMapel
+);
+
 // ======================================
 // FORM TAMBAH
 // ======================================
@@ -91,6 +98,7 @@ router.get(
 router.post(
     "/simpan",
     auth.isAuthenticated,
+    uploadSoal.single("gambar"),
     bankSoalController.simpan
 );
 
@@ -111,6 +119,7 @@ router.get(
 router.post(
     "/update/:id",
     auth.isAuthenticated,
+    uploadSoal.single("gambar"),
     bankSoalController.update
 );
 

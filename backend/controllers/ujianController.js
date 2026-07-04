@@ -1,4 +1,5 @@
 const ujianModel = require("../models/ujianModel");
+const siswaModel = require('../models/siswaModel');
 
 // ======================================
 // DAFTAR UJIAN
@@ -48,6 +49,27 @@ exports.tambah = async (req, res) => {
 
     }
 
+};
+
+// ======================================
+// DAFTAR PESERTA UJIAN
+// ======================================
+exports.listPeserta = async (req, res) => {
+    try {
+        const ujianId = req.params.id;
+
+        // Ambil data ujian & daftar siswa
+        const ujian = await ujianModel.findById(ujianId);
+        const peserta = await siswaModel.getByKelas(ujian.kelas_id);
+
+        res.render("ujian/peserta", {
+            ujian,
+            peserta
+        });
+    } catch (err) {
+        console.log(err);
+        res.send(err.message);
+    }
 };
 
 // ======================================

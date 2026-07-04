@@ -1,0 +1,45 @@
+<%- include("../partials/header",{title:"Peserta Ujian"}) %>
+<%- include("../partials/sidebar") %>
+
+<div class="main">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Daftar Peserta: <%= ujian.nama_ujian %></h2>
+            <a href="/ujian" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Kembali ke Ujian
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th width="60">No</th>
+                        <th>NISN</th>
+                        <th>Nama Siswa</th>
+                        <th>Jenis Kelamin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(peserta.length === 0){ %>
+                        <tr>
+                            <td colspan="4" class="text-center">Belum ada siswa di kelas ini.</td>
+                        </tr>
+                    <% } %>
+                    <% peserta.forEach((item, index) => { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= item.nisn %></td>
+                            <td><%= item.nama %></td>
+                            <td><%= item.jenis_kelamin %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%- include("../partials/footer") %>

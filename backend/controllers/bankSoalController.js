@@ -4,26 +4,40 @@ const parseWord = require("../helpers/wordParser");
 const validateSoal = require("../helpers/importValidator");
 
 // ======================================
-// DAFTAR SOAL
+// DAFTAR MAPEL (FOLDER)
 // ======================================
 exports.index = async (req, res) => {
-
     try {
-
-        const soal = await bankSoalModel.getAll();
-
+        const mapel = await bankSoalModel.getMapel();
         res.render("bank-soal/index", {
-            soal
+            mapel: mapel
         });
-
     } catch (err) {
-
         console.log(err);
-
-        res.send("Terjadi kesalahan.");
-
+        res.send(err.message);
     }
+};
 
+// ======================================
+// DAFTAR SOAL PER MAPEL (ISI FOLDER)
+// ======================================
+exports.getByMapel = async (req, res) => {
+    try {
+        const mapelId = req.params.id;
+        const soal = await bankSoalModel.getByMapelId(mapelId);
+        
+        // Kita juga perlu tahu nama mapelnya untuk judul halaman
+        const daftarMapel = await bankSoalModel.getMapel();
+        const mapelTerpilih = daftarMapel.find(m => m.id == mapelId);
+
+        res.render("bank-soal/mapel", {
+            soal,
+            mapel: mapelTerpilih
+        });
+    } catch (err) {
+        console.log(err);
+        res.send(err.message);
+    }
 };
 
 // ======================================
@@ -58,22 +72,44 @@ exports.simpan = async (req, res) => {
 
     try {
 
+        let namaGambar = "";
+
+        // Jika guru meng-upload gambar
+        if (req.file) {
+
+            namaGambar = req.file.filename;
+
+        }
+
         await bankSoalModel.create({
 
             mapel_id: req.body.mapel_id,
             guru_id: req.body.guru_id,
+
             jenis: req.body.jenis,
+
             pertanyaan: req.body.pertanyaan,
+
             pilihan_a: req.body.pilihan_a,
             pilihan_b: req.body.pilihan_b,
             pilihan_c: req.body.pilihan_c,
             pilihan_d: req.body.pilihan_d,
             pilihan_e: req.body.pilihan_e,
-            jawaban: req.body.jawaban,
+
+            // Untuk Benar/Salah gunakan jawaban_bs jika dipilih
+            jawaban:
+                req.body.jenis === "BS"
+                    ? req.body.jawaban_bs
+                    : req.body.jawaban,
+
             bobot: req.body.bobot,
-            gambar: "",
+
+            gambar: namaGambar,
+
             audio: "",
+
             video: "",
+
             status: req.body.status
 
         });
@@ -120,12 +156,39 @@ exports.edit = async (req, res) => {
 // ======================================
 // UPDATE SOAL
 // ======================================
+const fs = require('fs');
+const path = require('path');
+
 exports.update = async (req, res) => {
-
     try {
+        // 1. Ambil data lama
+        const soalLama = await bankSoalModel.findById(req.params.id);
 
+        if (!soalLama) {
+            return res.send("Data soal tidak ditemukan.");
+        }
+
+        // 2. Gunakan gambar lama secara default jika tidak ada upload baru
+        let namaGambar = soalLama.gambar;
+
+        // 3. Jika guru mengunggah gambar baru
+        if (req.file) {
+            namaGambar = req.file.filename;
+
+            // Fitur Tambahan: Hapus file gambar lama dari server agar penyimpanan tidak cepat penuh
+            if (soalLama.gambar) {
+                // Sesuaikan path ini dengan struktur folder public/uploads Anda
+                const pathGambarLama = path.join(__dirname, '../../public/uploads/gambar/soal', soalLama.gambar);
+                
+                // Cek apakah file lama benar-benar ada di folder sebelum dihapus
+                if (fs.existsSync(pathGambarLama)) {
+                    fs.unlinkSync(pathGambarLama);
+                }
+            }
+        }
+
+        // 4. Update data ke database
         await bankSoalModel.update(req.params.id, {
-
             mapel_id: req.body.mapel_id,
             guru_id: req.body.guru_id,
             jenis: req.body.jenis,
@@ -135,22 +198,18 @@ exports.update = async (req, res) => {
             pilihan_c: req.body.pilihan_c,
             pilihan_d: req.body.pilihan_d,
             pilihan_e: req.body.pilihan_e,
-            jawaban: req.body.jawaban,
+            jawaban: req.body.jenis === "BS" ? req.body.jawaban_bs : req.body.jawaban,
             bobot: req.body.bobot,
+            gambar: namaGambar,
             status: req.body.status
-
         });
 
         res.redirect("/bank-soal");
 
     } catch (err) {
-
         console.log(err);
-
         res.send(err.message);
-
     }
-
 };
 
 // ======================================

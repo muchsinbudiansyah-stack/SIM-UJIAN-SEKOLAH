@@ -11,6 +11,8 @@ if (!fs.existsSync(dbFolder)) {
 const dbPath = path.join(dbFolder, "simujian.db");
 
 const db = new sqlite3.Database(dbPath, (err) => {
+    console.log("DATABASE PATH:", dbPath);
+    
     if (err) {
         console.error("Gagal membuka database:", err.message);
     } else {

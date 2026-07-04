@@ -4,44 +4,61 @@ const db = require("../config/database");
 // TAMPILKAN SEMUA SOAL
 // ======================================
 exports.getAll = () => {
-
     return new Promise((resolve, reject) => {
-
         db.all(
             `
             SELECT
-
                 bank_soal.*,
-
                 mapel.nama_mapel,
-
                 guru.nama
-
             FROM bank_soal
-
             LEFT JOIN mapel
                 ON bank_soal.mapel_id = mapel.id
-
             LEFT JOIN guru
                 ON bank_soal.guru_id = guru.id
-
             ORDER BY bank_soal.id DESC
             `,
             [],
             (err, rows) => {
-
                 if (err) {
                     reject(err);
                 } else {
                     resolve(rows);
                 }
-
             }
-
         );
-
     });
+};
 
+// ======================================
+// TAMPILKAN SOAL BERDASARKAN ID MAPEL
+// ======================================
+exports.getByMapelId = (mapelId) => {
+    return new Promise((resolve, reject) => {
+        db.all(
+            `
+            SELECT
+                bank_soal.*,
+                mapel.nama_mapel,
+                guru.nama
+            FROM bank_soal
+            LEFT JOIN mapel
+                ON bank_soal.mapel_id = mapel.id
+            LEFT JOIN guru
+                ON bank_soal.guru_id = guru.id
+            WHERE bank_soal.mapel_id = ?
+            ORDER BY bank_soal.id DESC
+            `,
+            [mapelId],
+            (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            }
+        );
+    });
 };
 
 // ======================================
@@ -232,6 +249,7 @@ exports.update = (id, data) => {
                 pilihan_e = ?,
                 jawaban = ?,
                 bobot = ?,
+                gambar = ?,
                 status = ?
             WHERE id = ?
             `,
@@ -247,6 +265,7 @@ exports.update = (id, data) => {
                 data.pilihan_e,
                 data.jawaban,
                 data.bobot,
+                data.gambar,
                 data.status,
                 id
             ],

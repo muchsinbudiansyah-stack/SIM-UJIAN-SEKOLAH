@@ -1,34 +1,24 @@
-const guruModel = require("../models/guruModel");
-const kelasModel = require("../models/kelasModel");
-const mapelModel = require("../models/mapelModel");
+const dashboardModel = require("../models/dashboardModel");
+
+// ======================================
+// DASHBOARD ADMIN
+// ======================================
 
 exports.index = async (req, res) => {
 
     try {
 
-        // ======================================
-        // HITUNG DATA DASHBOARD
-        // ======================================
+        const statistik = await dashboardModel.getStatistik();
 
-        const totalGuru = await guruModel.count();
-
-        const totalKelas = await kelasModel.count();
-
-        const totalMapel = await mapelModel.count();
-
-        // ======================================
-        // TAMPILKAN DASHBOARD
-        // ======================================
+        const aktivitas = await dashboardModel.getAktivitasTerbaru();
 
         res.render("admin/dashboard", {
 
-            totalGuru,
-            totalKelas,
-            totalMapel,
+            admin: req.session.user,
 
-            // sementara
-            totalSiswa: 0,
-            totalSoal: 0
+            statistik,
+
+            aktivitas
 
         });
 
@@ -36,7 +26,7 @@ exports.index = async (req, res) => {
 
         console.log(err);
 
-        res.send("Terjadi kesalahan pada Dashboard.");
+        res.status(500).send(err.message);
 
     }
 

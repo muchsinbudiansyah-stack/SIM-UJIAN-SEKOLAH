@@ -73,6 +73,8 @@ const ujianRoutes = require("./backend/routes/ujianRoutes");
 const uploadRoutes = require("./backend/routes/uploadRoutes");
 const hasilRoutes = require('./backend/routes/hasilRoutes');
 const pesertaRoutes=require("./backend/routes/pesertaRoutes");
+const monitorRoutes = require("./backend/routes/monitorRoutes");
+const rankingRoutes = require("./backend/routes/rankingRoutes");
 
 app.use("/", authRoutes);
 
@@ -95,6 +97,10 @@ app.use("/upload", uploadRoutes);
 app.use('/hasil', hasilRoutes);
 
 app.use("/peserta",pesertaRoutes);
+
+app.use("/monitor", monitorRoutes);
+
+app.use("/ranking", rankingRoutes);
 // ======================================
 // SERVER
 // ======================================

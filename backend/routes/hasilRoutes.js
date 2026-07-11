@@ -1,12 +1,27 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const hasilController = require('../controllers/hasilController');
-const auth = require('../middleware/auth'); // Sesuaikan dengan lokasi file auth Anda
+
+const hasilController = require("../controllers/hasilController");
+const auth = require("../middleware/auth");
 
 router.get(
+
     "/",
-    auth.isAuthenticated,
+
+    auth.isAdmin,
+
     hasilController.index
+
+);
+
+router.get(
+
+    "/detail/:id",
+
+    auth.isAdmin,
+
+    hasilController.detail
+
 );
 
 module.exports = router;

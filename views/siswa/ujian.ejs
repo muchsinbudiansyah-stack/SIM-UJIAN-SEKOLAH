@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+
+<%= ujian.nama_ujian %>
+
+</title>
+
+<link
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet">
+
+<link
+rel="stylesheet"
+href="/assets/css/ujian.css">
+
+</head>
+
+<body>
+
+<!-- ===================================== -->
+<!-- HEADER -->
+<!-- ===================================== -->
+
+<header class="header">
+
+<div class="logo">
+
+<h3>
+
+SIM UJIAN SEKOLAH
+
+</h3>
+
+<small>
+
+SMA Negeri 1 Teluk Belengkong
+
+</small>
+
+</div>
+
+<div class="header-right">
+
+<div>
+
+<b>
+
+Peserta
+
+</b>
+
+<br>
+
+<%= siswa.nama %>
+
+</div>
+
+<div class="timer-box">
+
+<div>
+
+Sisa Waktu
+
+</div>
+
+<div
+id="timer"
+class="timer">
+
+--:--:--
+
+</div>
+
+</div>
+
+</div>
+
+</header>
+
+<!-- ===================================== -->
+<!-- CONTENT -->
+<!-- ===================================== -->
+
+<div class="wrapper">
+
+<!-- ===================================== -->
+<!-- KOLOM KIRI -->
+<!-- ===================================== -->
+
+<div class="content-left">
+
+<div class="card shadow-sm">
+
+<div class="card-body">
+
+<div class="d-flex
+justify-content-between
+align-items-center">
+
+<div>
+
+<h4>
+
+<%= ujian.nama_ujian %>
+
+</h4>
+
+<p class="text-muted">
+
+<%= ujian.nama_mapel %>
+
+</p>
+
+</div>
+
+<div>
+
+<span
+class="badge bg-primary">
+
+Nomor
+
+<%= nomor %>
+
+/
+
+<%= total %>
+
+</span>
+
+</div>
+
+</div>
+
+<hr>
+
+<form
+
+id="formUjian"
+
+method="POST"
+
+action="/peserta/ujian/<%= ujian.id %>/selesai">
+
+<input
+type="hidden"
+id="ujian_id"
+value="<%= ujian.id %>">
+
+<input
+type="hidden"
+id="soal_id"
+name="soal_id"
+value="<%= soal.id %>">
+
+<!-- ===================================== -->
+<!-- SOAL -->
+<!-- ===================================== -->
+
+<div
+class="soal-box">
+
+<div
+class="nomor-soal">
+
+SOAL NOMOR
+
+<%= nomor %>
+
+</div>
+
+<div
+class="pertanyaan">
+
+<%- soal.pertanyaan %>
+
+</div>
+
+<!-- ===================================== -->
+<!-- PILIHAN -->
+<!-- ===================================== -->
+
+<div
+class="pilihan">
+
+<label class="opsi">
+
+<input
+type="radio"
+name="jawaban"
+value="A"
+<%= jawaban && jawaban.jawaban=="A" ? "checked" : "" %>>
+
+<span>
+
+<strong>A.</strong>
+
+<%= soal.pilihan_a %>
+
+</span>
+
+</label>
+
+<label class="opsi">
+
+<input
+type="radio"
+name="jawaban"
+value="B"
+<%= jawaban && jawaban.jawaban=="B" ? "checked" : "" %>>
+
+<span>
+
+<strong>B.</strong>
+
+<%= soal.pilihan_b %>
+
+</span>
+
+</label>
+
+<label class="opsi">
+
+<input
+type="radio"
+name="jawaban"
+value="C"
+<%= jawaban && jawaban.jawaban=="C" ? "checked" : "" %>>
+
+<span>
+
+<strong>C.</strong>
+
+<%= soal.pilihan_c %>
+
+</span>
+
+</label>
+
+<label class="opsi">
+
+<input
+type="radio"
+name="jawaban"
+value="D"
+<%= jawaban && jawaban.jawaban=="D" ? "checked" : "" %>>
+
+<span>
+
+<strong>D.</strong>
+
+<%= soal.pilihan_d %>
+
+</span>
+
+</label>
+
+<label class="opsi">
+
+<input
+type="radio"
+name="jawaban"
+value="E"
+<%= jawaban && jawaban.jawaban=="E" ? "checked" : "" %>>
+
+<span>
+
+<strong>E.</strong>
+
+<%= soal.pilihan_e %>
+
+</span>
+
+</label>
+
+</div>
+
+<!-- akhir pilihan -->
+
+</div>
+
+<!-- akhir soal-box -->
+
+<hr>
+
+<div
+class="footer-nav">
+
+<% if(nomor>1){ %>
+
+<a
+
+href="/peserta/ujian/<%= ujian.id %>?no=<%= nomor-1 %>"
+
+class="btn btn-secondary">
+
+← Sebelumnya
+
+</a>
+
+<% } else { %>
+
+<div></div>
+
+<% } %>
+
+<% if(nomor<total){ %>
+
+<a
+
+href="/peserta/ujian/<%= ujian.id %>?no=<%= nomor+1 %>"
+
+class="btn btn-primary">
+
+Selanjutnya →
+
+</a>
+
+<% } else { %>
+
+<button
+
+type="submit"
+
+class="btn btn-success">
+
+Selesai Ujian
+
+</button>
+
+<% } %>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ===================================== -->
+<!-- PANEL KANAN -->
+<!-- ===================================== -->
+
+<div class="sidebar">
+
+<div class="card shadow-sm mb-3">
+
+<div class="card-body text-center">
+
+<h5>
+
+Informasi Peserta
+
+</h5>
+
+<hr>
+
+<p class="mb-2">
+
+<b>Nama</b>
+
+<br>
+
+<%= siswa.nama %>
+
+</p>
+
+<p class="mb-2">
+
+<b>Kelas</b>
+
+<br>
+
+<%= siswa.kelas_id %>
+
+</p>
+
+<p>
+
+<b>Ujian</b>
+
+<br>
+
+<%= ujian.nama_ujian %>
+
+</p>
+
+</div>
+
+</div>
+
+<div class="card shadow-sm">
+
+<div class="card-body">
+
+<h5 class="text-center">
+
+Navigasi Soal
+
+</h5>
+
+<hr>
+
+<div class="nomor-grid">
+
+<%
+
+// daftar soal yang sudah dijawab
+const soalTerjawab = semuaJawaban.map(j => j.soal_id);
+
+for(let i=1;i<=total;i++){
+
+    const idSoal = urutanSoal[i-1];
+
+    let warna = "";
+
+    if(i == nomor){
+
+        warna = "active";
+
+    }else if(soalTerjawab.includes(idSoal)){
+
+        warna = "answered";
+
+    }
+
+%>
+
+<a
+
+href="/peserta/ujian/<%= ujian.id %>?no=<%= i %>"
+
+class="nomor-item <%= warna %>"
+
+data-nomor="<%= i %>">
+
+<%= i %>
+
+</a>
+
+<% } %>
+
+</div>
+
+<hr>
+
+<div class="legend">
+
+<div class="legend-item">
+
+<div class="kotak aktif"></div>
+
+<span>
+
+Soal Aktif
+
+</span>
+
+</div>
+
+<div class="legend-item">
+
+<div class="kotak terjawab"></div>
+
+<span>
+
+Sudah Dijawab
+
+</span>
+
+</div>
+
+<div class="legend-item">
+
+<div class="kotak belum"></div>
+
+<span>
+
+Belum Dijawab
+
+</span>
+
+</div>
+
+</div>
+
+<hr>
+
+<button
+
+id="btnSelesai"
+
+type="submit"
+
+form="formUjian"
+
+class="btn btn-danger w-100">
+
+Selesai Ujian
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- END SIDEBAR -->
+
+</div>
+
+<!-- END WRAPPER -->
+
+<script>
+
+    window.CBT = {
+
+        ujian_id: <%= ujian.id %>,
+
+        soal_id: <%= soal.id %>,
+
+        nomor: <%= nomor %>,
+
+        total: <%= total %>,
+
+        sisaWaktu: <%= sisaWaktu %>
+
+    };
+
+</script>
+
+<script src="/assets/js/ujian.js"></script>
+
+</body>
+
+</html>

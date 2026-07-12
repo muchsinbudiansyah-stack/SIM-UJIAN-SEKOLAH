@@ -17,31 +17,19 @@ exports.getAnalisisButir = (ujian_id) => {
 
                 bs.pertanyaan,
 
-                bs.kunci_jawaban,
+                COUNT(js.id) AS jumlah_dijawab,
 
-                COUNT(j.id) AS dijawab,
+                COALESCE(SUM(js.benar),0) AS jumlah_benar,
 
-                SUM(
-                    CASE
-                        WHEN j.jawaban = bs.kunci_jawaban
-                        THEN 1
-                        ELSE 0
-                    END
-                ) AS benar,
-
-                SUM(
-                    CASE
-                        WHEN j.jawaban != bs.kunci_jawaban
-                        THEN 1
-                        ELSE 0
-                    END
-                ) AS salah
+                COUNT(js.id)-COALESCE(SUM(js.benar),0) AS jumlah_salah
 
             FROM bank_soal bs
 
-            LEFT JOIN jawaban_siswa j
-                ON bs.id = j.soal_id
-                AND j.ujian_id = ?
+            LEFT JOIN jawaban_siswa js
+
+                ON bs.id = js.soal_id
+
+                AND js.ujian_id = ?
 
             GROUP BY bs.id
 
@@ -52,35 +40,41 @@ exports.getAnalisisButir = (ujian_id) => {
 
             (err, rows) => {
 
-                if (err) {
+                if(err){
 
                     return reject(err);
 
                 }
 
-                rows.forEach(item => {
+                rows.forEach(item=>{
 
-                    const total = Number(item.dijawab) || 0;
-                    const benar = Number(item.benar) || 0;
+                    const total = Number(item.jumlah_dijawab);
+
+                    const benar = Number(item.jumlah_benar);
 
                     item.persen =
-                        total > 0
-                            ? ((benar / total) * 100).toFixed(2)
-                            : "0.00";
 
-                    const p = Number(item.persen);
+                        total>0
 
-                    if (p >= 80) {
+                        ? ((benar/total)*100).toFixed(2)
 
-                        item.kategori = "Mudah";
+                        : "0.00";
 
-                    } else if (p >= 40) {
+                    if(item.persen>=80){
 
-                        item.kategori = "Sedang";
+                        item.kategori="Mudah";
 
-                    } else {
+                    }
 
-                        item.kategori = "Sulit";
+                    else if(item.persen>=40){
+
+                        item.kategori="Sedang";
+
+                    }
+
+                    else{
+
+                        item.kategori="Sulit";
 
                     }
 

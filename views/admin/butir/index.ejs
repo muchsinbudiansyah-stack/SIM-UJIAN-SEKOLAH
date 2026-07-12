@@ -1,0 +1,211 @@
+<%- include("../../partials/header",{title:"Analisis Butir Soal"}) %>
+
+<%- include("../../partials/sidebar") %>
+
+<div class="content">
+
+<div class="container-fluid">
+
+<h2 class="mb-4">
+
+<i class="bi bi-bar-chart-line"></i>
+
+Analisis Butir Soal
+
+</h2>
+
+<div class="row mb-4">
+
+<div class="col-md-3">
+
+<div class="card shadow-sm">
+
+<div class="card-body text-center">
+
+<h6>Total Soal</h6>
+
+<h2 class="text-primary">
+
+<%= summary.total %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card shadow-sm">
+
+<div class="card-body text-center">
+
+<h6>Mudah</h6>
+
+<h2 class="text-success">
+
+<%= summary.mudah %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card shadow-sm">
+
+<div class="card-body text-center">
+
+<h6>Sedang</h6>
+
+<h2 class="text-warning">
+
+<%= summary.sedang %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card shadow-sm">
+
+<div class="card-body text-center">
+
+<h6>Sulit</h6>
+
+<h2 class="text-danger">
+
+<%= summary.sulit %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card shadow-sm">
+
+<div class="card-header">
+
+<strong>
+
+Analisis Per Soal
+
+</strong>
+
+</div>
+
+<div class="card-body">
+
+<table class="table table-bordered table-hover">
+
+<thead class="table-primary">
+
+<tr>
+
+<th>No</th>
+
+<th>Persentase Benar</th>
+
+<th>Benar</th>
+
+<th>Salah</th>
+
+<th>Kategori</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<% data.forEach((item,index)=>{ %>
+
+<tr>
+
+<td>
+
+<%= index+1 %>
+
+</td>
+
+<td>
+
+<%= item.persen %> %
+
+</td>
+
+<td>
+
+<%= item.jumlah_benar %>
+
+</td>
+
+<td>
+
+<%= item.jumlah_salah %>
+
+</td>
+
+<td>
+
+<% if(item.kategori=="Mudah"){ %>
+
+<span class="badge bg-success">
+
+Mudah
+
+</span>
+
+<% }else if(item.kategori=="Sedang"){ %>
+
+<span class="badge bg-warning text-dark">
+
+Sedang
+
+</span>
+
+<% }else{ %>
+
+<span class="badge bg-danger">
+
+Sulit
+
+</span>
+
+<% } %>
+
+</td>
+
+</tr>
+
+<% }) %>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<%- include("../../partials/footer") %>

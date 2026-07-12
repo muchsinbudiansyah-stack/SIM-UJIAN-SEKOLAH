@@ -77,6 +77,7 @@ const monitorRoutes = require("./backend/routes/monitorRoutes");
 const rankingRoutes = require("./backend/routes/rankingRoutes");
 const analisisRoutes = require("./backend/routes/analisisRoutes");
 const laporanRoutes = require("./backend/routes/laporanRoutes");
+const butirRoutes = require("./backend/routes/butirRoutes");
 
 app.use("/", authRoutes);
 
@@ -107,6 +108,8 @@ app.use("/ranking", rankingRoutes);
 app.use("/analisis", analisisRoutes);
 
 app.use("/laporan", laporanRoutes);
+
+app.use("/butir", butirRoutes);
 // ======================================
 // SERVER
 // ======================================

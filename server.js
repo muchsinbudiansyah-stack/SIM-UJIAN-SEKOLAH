@@ -75,6 +75,8 @@ const hasilRoutes = require('./backend/routes/hasilRoutes');
 const pesertaRoutes=require("./backend/routes/pesertaRoutes");
 const monitorRoutes = require("./backend/routes/monitorRoutes");
 const rankingRoutes = require("./backend/routes/rankingRoutes");
+const analisisRoutes = require("./backend/routes/analisisRoutes");
+const laporanRoutes = require("./backend/routes/laporanRoutes");
 
 app.use("/", authRoutes);
 
@@ -101,6 +103,10 @@ app.use("/peserta",pesertaRoutes);
 app.use("/monitor", monitorRoutes);
 
 app.use("/ranking", rankingRoutes);
+
+app.use("/analisis", analisisRoutes);
+
+app.use("/laporan", laporanRoutes);
 // ======================================
 // SERVER
 // ======================================

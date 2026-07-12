@@ -1,0 +1,573 @@
+<%- include("../../partials/header",{title:"Analisis Nilai"}) %>
+
+<%- include("../../partials/sidebar") %>
+
+<div class="content">
+
+    <div class="container-fluid">
+
+        <h2 class="mb-4">
+
+            <i class="bi bi-graph-up"></i>
+
+            Analisis Nilai
+
+        </h2>
+
+        <div class="row">
+
+            <div class="col-md-2">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <h6>Peserta</h6>
+
+                        <h2 class="text-primary">
+
+                            <%= summary.jumlah_peserta %>
+
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <h6>Selesai</h6>
+
+                        <h2 class="text-success">
+
+                            <%= summary.selesai %>
+
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <h6>Belum</h6>
+
+                        <h2 class="text-danger">
+
+                            <%= summary.belum %>
+
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <h6>Tertinggi</h6>
+
+                        <h2 class="text-success">
+
+                            <%= summary.nilai_tertinggi %>
+
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <h6>Terendah</h6>
+
+                        <h2 class="text-warning">
+
+                            <%= summary.nilai_terendah %>
+
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <h6>Rata-rata</h6>
+
+                        <h2 class="text-info">
+
+                            <%= summary.rata_rata %>
+
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm border-primary">
+
+            <div class="card-body text-center">
+
+                <h6 class="text-primary">
+
+                    Median
+
+                </h6>
+
+                <h3>
+
+                    <%= median.toFixed(2) %>
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm border-warning">
+
+            <div class="card-body text-center">
+
+                <h6 class="text-warning">
+
+                    Rentang Nilai
+
+                </h6>
+
+                <h3>
+
+                    <%= rentang.toFixed(2) %>
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm border-info">
+
+            <div class="card-body text-center">
+
+                <h6 class="text-info">
+
+                    Standar Deviasi
+
+                </h6>
+
+                <h3>
+
+                    <%= standarDeviasi %>
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+        <div class="card shadow-sm mt-4">
+
+    <div class="card-header">
+
+        <strong>
+
+            Grafik Distribusi Nilai
+
+        </strong>
+
+    </div>
+
+    <div class="card-body">
+
+        <canvas id="grafikNilai" height="90"></canvas>
+
+    </div>
+
+</div>
+
+<div class="card shadow-sm mt-4">
+
+    <div class="card-header">
+
+        <strong>
+
+            🏆 Top 10 Ranking
+
+        </strong>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-hover">
+
+            <thead class="table-warning">
+
+                <tr>
+
+                    <th width="80">Rank</th>
+
+                    <th>Nama</th>
+
+                    <th>NISN</th>
+
+                    <th>Kelas</th>
+
+                    <th width="120">Nilai</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <% top10.forEach((item,index)=>{ %>
+
+                <tr>
+
+                    <td>
+
+                        <% if(index==0){ %>
+
+                            🥇
+
+                        <% }else if(index==1){ %>
+
+                            🥈
+
+                        <% }else if(index==2){ %>
+
+                            🥉
+
+                        <% }else{ %>
+
+                            <%= index+1 %>
+
+                        <% } %>
+
+                    </td>
+
+                    <td>
+
+                        <strong>
+
+                            <%= item.nama %>
+
+                        </strong>
+
+                    </td>
+
+                    <td>
+
+                        <%= item.nisn %>
+
+                    </td>
+
+                    <td>
+
+                        <%= item.kelas %>
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge bg-success">
+
+                            <%= item.nilai %>
+
+                        </span>
+
+                    </td>
+
+                </tr>
+
+                <% }) %>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<div class="row mt-4">
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm border-success">
+
+            <div class="card-body text-center">
+
+                <h5 class="text-success">
+
+                    ✅ Lulus
+
+                </h5>
+
+                <h1 class="text-success">
+
+                    <%= kelulusan.lulus || 0 %>
+
+                </h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm border-danger">
+
+            <div class="card-body text-center">
+
+                <h5 class="text-danger">
+
+                    ❌ Tidak Lulus
+
+                </h5>
+
+                <h1 class="text-danger">
+
+                    <%= kelulusan.tidak_lulus || 0 %>
+
+                </h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+        <div class="card shadow-sm mt-4">
+
+            <div class="card-header">
+
+                <strong>
+
+                    Daftar Nilai
+
+                </strong>
+
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-bordered table-hover">
+
+                    <thead class="table-primary">
+
+                        <tr>
+
+                            <th>No</th>
+
+                            <th>Nama</th>
+
+                            <th>NISN</th>
+
+                            <th>Kelas</th>
+
+                            <th>Mapel</th>
+
+                            <th>Ujian</th>
+
+                            <th>Nilai</th>
+
+                            <th>Benar</th>
+
+                            <th>Salah</th>
+
+                            <th>Kosong</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <% data.forEach((item,index)=>{ %>
+
+                        <tr>
+
+                            <td><%= index+1 %></td>
+
+                            <td><%= item.nama %></td>
+
+                            <td><%= item.nisn %></td>
+
+                            <td><%= item.kelas %></td>
+
+                            <td><%= item.nama_mapel %></td>
+
+                            <td><%= item.nama_ujian %></td>
+
+                            <td>
+
+                                <span class="badge bg-success">
+
+                                    <%= item.nilai %>
+
+                                </span>
+
+                            </td>
+
+                            <td><%= item.benar %></td>
+
+                            <td><%= item.salah %></td>
+
+                            <td><%= item.kosong %></td>
+
+                        </tr>
+
+                        <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx = document.getElementById("grafikNilai");
+
+new Chart(ctx,{
+
+    type:"bar",
+
+    data:{
+
+        labels:[
+
+            "90 - 100",
+
+            "80 - 89",
+
+            "70 - 79",
+
+            "60 - 69",
+
+            "< 60"
+
+        ],
+
+        datasets:[{
+
+            label:"Jumlah Siswa",
+
+            data:[
+
+                <%= distribusi.a || 0 %>,
+
+                <%= distribusi.b || 0 %>,
+
+                <%= distribusi.c || 0 %>,
+
+                <%= distribusi.d || 0 %>,
+
+                <%= distribusi.e || 0 %>
+
+            ]
+
+        }]
+
+    },
+
+    options:{
+
+        responsive:true,
+
+        plugins:{
+
+            legend:{
+
+                display:false
+
+            }
+
+        },
+
+        scales:{
+
+            y:{
+
+                beginAtZero:true,
+
+                ticks:{
+
+                    precision:0
+
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+</script>
+
+<%- include("../../partials/footer") %>

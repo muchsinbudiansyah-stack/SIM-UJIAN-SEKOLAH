@@ -1,0 +1,308 @@
+<%- include("../../partials/header",{title:"Laporan Hasil Ujian"}) %>
+
+<%- include("../../partials/sidebar") %>
+
+<div class="content">
+
+    <div class="container-fluid">
+
+        <h2 class="mb-4">
+
+            <i class="bi bi-printer"></i>
+
+            Laporan Hasil Ujian
+
+        </h2>
+
+        <div class="card shadow-sm mb-4">
+
+    <div class="card-body">
+
+        <form method="GET" action="/laporan">
+
+            <div class="row">
+
+                <div class="col-md-3">
+
+                    <label class="form-label">
+
+                        Kelas
+
+                    </label>
+
+                    <select
+
+                        name="kelas"
+
+                        class="form-select">
+
+                        <option value="">
+
+                            Semua Kelas
+
+                        </option>
+
+                        <% daftarKelas.forEach(k=>{ %>
+
+                        <option
+
+                            value="<%= k.id %>"
+
+                            <%= filter.kelas==k.id ? "selected" : "" %>>
+
+                            <%= k.nama %>
+
+                        </option>
+
+                        <% }) %>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <label class="form-label">
+
+                        Mata Pelajaran
+
+                    </label>
+
+                    <select
+
+                        name="mapel"
+
+                        class="form-select">
+
+                        <option value="">
+
+                            Semua Mapel
+
+                        </option>
+
+                        <% daftarMapel.forEach(m=>{ %>
+
+                        <option
+
+                            value="<%= m.id %>"
+
+                            <%= filter.mapel==m.id ? "selected" : "" %>>
+
+                            <%= m.nama_mapel %>
+
+                        </option>
+
+                        <% }) %>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <label class="form-label">
+
+                        Ujian
+
+                    </label>
+
+                    <select
+
+                        name="ujian"
+
+                        class="form-select">
+
+                        <option value="">
+
+                            Semua Ujian
+
+                        </option>
+
+                        <% daftarUjian.forEach(u=>{ %>
+
+                        <option
+
+                            value="<%= u.id %>"
+
+                            <%= filter.ujian==u.id ? "selected" : "" %>>
+
+                            <%= u.nama_ujian %>
+
+                        </option>
+
+                        <% }) %>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end">
+
+                    <button
+    type="submit"
+    class="btn btn-primary me-2">
+
+    <i class="bi bi-search"></i>
+
+    Filter
+
+</button>
+
+<a
+    href="/laporan"
+    class="btn btn-secondary me-2">
+
+    Reset
+
+</a>
+
+<button
+    type="button"
+    class="btn btn-success"
+    onclick="window.print()">
+
+    <i class="bi bi-printer"></i>
+
+    Print
+
+</button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+
+                <strong>
+
+                    Data Hasil Ujian
+
+                </strong>
+
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-bordered table-hover">
+
+                    <thead class="table-primary">
+
+                        <tr>
+
+                            <th>No</th>
+
+                            <th>Nama</th>
+
+                            <th>NISN</th>
+
+                            <th>Kelas</th>
+
+                            <th>Mapel</th>
+
+                            <th>Ujian</th>
+
+                            <th>Nilai</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <% data.forEach((item,index)=>{ %>
+
+                        <tr>
+
+                            <td><%= index+1 %></td>
+
+                            <td><%= item.nama %></td>
+
+                            <td><%= item.nisn %></td>
+
+                            <td><%= item.kelas %></td>
+
+                            <td><%= item.nama_mapel %></td>
+
+                            <td><%= item.nama_ujian %></td>
+
+                            <td>
+
+                                <span class="badge bg-success">
+
+                                    <%= item.nilai %>
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+@media print{
+
+    .sidebar{
+
+        display:none !important;
+
+    }
+
+    .navbar{
+
+        display:none !important;
+
+    }
+
+    .btn{
+
+        display:none !important;
+
+    }
+
+    form{
+
+        display:none !important;
+
+    }
+
+    .card{
+
+        box-shadow:none !important;
+
+        border:1px solid #000;
+
+    }
+
+    body{
+
+        background:white;
+
+    }
+
+}
+
+</style>
+
+<%- include("../../partials/footer") %>

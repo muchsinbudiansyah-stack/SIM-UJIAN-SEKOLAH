@@ -346,24 +346,40 @@ exports.selesaiUjian = async (req, res) => {
         );
 
         let benar = 0;
-        let salah = 0;
+let salah = 0;
+let jumlahEssay = 0;
 
-        daftarJawaban.forEach(item => {
+daftarJawaban.forEach(item => {
 
-            if (item.jawaban === item.kunci) {
-                benar++;
-            } else {
-                salah++;
-            }
+    const jenis = (item.jenis || "").trim().toUpperCase();
 
-        });
+    // Essay tidak dinilai otomatis
+    if (jenis === "ESSAY") {
+        jumlahEssay++;
+        return;
+    }
+
+    if (item.jawaban === item.kunci) {
+        benar++;
+    } else {
+        salah++;
+    }
+
+});
 
         const jumlahSoal = ujian.jumlah_soal;
-        const kosong = jumlahSoal - daftarJawaban.length;
 
-        const nilai = Number(
-            ((benar / jumlahSoal) * 100).toFixed(2)
-        );
+const jumlahPG = jumlahSoal - jumlahEssay;
+
+const kosong = jumlahPG - (benar + salah);
+
+const nilai = Number(
+    (
+        jumlahPG > 0
+            ? (benar / jumlahPG) * 100
+            : 0
+    ).toFixed(2)
+);
 
         await pesertaModel.simpanHasil({
 
@@ -393,14 +409,26 @@ await pesertaModel.selesaiMonitor(
 
         res.render("siswa/hasil", {
 
-            siswa: req.session.user,
-            ujian,
-            benar,
-            salah,
-            kosong,
-            nilai
+    siswa: req.session.user,
+    ujian,
+    benar,
+    salah,
+    kosong,
 
-        });
+    jumlahPG,
+
+    jumlahEssay,
+
+    nilaiPG: nilai,
+
+    statusEssay:
+        jumlahEssay > 0
+            ? "Menunggu Koreksi Guru"
+            : "Tidak Ada",
+
+    adaEssay: jumlahEssay > 0
+
+});
 
     } catch (err) {
 

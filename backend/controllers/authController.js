@@ -18,6 +18,8 @@ exports.login = async (req, res) => {
 
         const user = await userModel.findByUsername(username);
 
+        console.log("DATA USER :", user);
+
         if (!user) {
             return res.send("Username tidak ditemukan.");
         }
@@ -29,10 +31,32 @@ exports.login = async (req, res) => {
         }
 
         req.session.user = {
-            id: user.id,
-            username: user.username,
-            role: user.role
-        };
+    id: user.id,
+    username: user.username,
+    role: user.role
+};
+
+console.log("ROLE =", user.role);
+console.log("TYPE =", typeof user.role);
+
+// Redirect sesuai role
+switch (user.role) {
+
+    case "admin":
+        return res.redirect("/admin/dashboard");
+
+    case "guru":
+        return res.redirect("/guru/dashboard");
+
+    case "siswa":
+        return res.redirect("/siswa/dashboard");
+
+    default:
+        console.log("ROLE TIDAK DIKENALI:", user.role);
+        req.session.destroy(() => {});
+        return res.send("Role tidak dikenali.");
+
+}
 
         res.redirect("/admin/dashboard");
 

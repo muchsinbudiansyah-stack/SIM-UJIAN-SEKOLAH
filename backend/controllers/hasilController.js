@@ -8,55 +8,113 @@ exports.index = async (req, res) => {
 
     try {
 
-        const hasil = await hasilModel.getAllHasil();
+        console.log("\n======================================");
+        console.log("===== MASUK HASIL CONTROLLER =====");
+        console.log("ROLE :", req.session.user.role);
+        console.log("SESSION :", req.session.user);
+        console.log("======================================");
 
-        console.log("========== HASIL UJIAN ==========");
-        console.table(hasil);
-        console.log("=================================");
+        let hasil = [];
 
-        res.render("admin/hasil/index", {
-            hasil
-        });
+        if (req.session.user.role === "admin") {
 
-    } catch (err) {
+            hasil = await hasilModel.getAllHasil();
 
-        console.log(err);
+            console.log("LOGIN SEBAGAI ADMIN");
+            console.log("JUMLAH HASIL :", hasil.length);
 
-        res.send(err.message);
+        } else {
 
-    }
+            // ======================================
+            // AMBIL DATA GURU LOGIN
+            // ======================================
 
-};
+            const guru = await hasilModel.getGuruByNIP(
+                req.session.user.username
+            );
 
-// ======================================
-// DETAIL HASIL
-// ======================================
+            console.log("DATA GURU LOGIN");
+            console.log(guru);
 
-exports.detail = async (req, res) => {
+            if (!guru) {
 
-    try {
-
-        const detail = await hasilModel.getDetail(
-
-            req.params.id
-
-        );
-
-        res.render(
-
-            "admin/hasil/detail",
-
-            {
-
-                detail
+                return res.send("Data guru tidak ditemukan.");
 
             }
 
+            // ======================================
+            // AMBIL MAPEL GURU
+            // ======================================
+
+            const mapelGuru =
+                await hasilModel.getMapelGuru(
+                    guru.id
+                );
+
+            console.log("MAPEL GURU");
+            console.table(mapelGuru);
+
+            if (mapelGuru.length === 0) {
+
+                console.log("GURU TIDAK MEMILIKI MAPEL");
+
+                return res.render(
+                    "admin/hasil/index",
+                    {
+                        hasil: [],
+                        role: req.session.user.role
+                    }
+                );
+
+            }
+
+            // ======================================
+            // DAFTAR ID MAPEL
+            // ======================================
+
+            const daftarMapel =
+                mapelGuru.map(m => m.id);
+
+            console.log("DAFTAR MAPEL");
+            console.log(daftarMapel);
+
+            // ======================================
+            // AMBIL HASIL
+            // ======================================
+
+            hasil =
+                await hasilModel.getHasilByMapel(
+                    daftarMapel
+                );
+
+            console.log("JUMLAH HASIL :", hasil.length);
+
+            console.table(
+                hasil.map(item => ({
+                    id: item.id,
+                    ujian: item.nama_ujian,
+                    mapel: item.nama_mapel,
+                    siswa: item.nama_siswa,
+                    nilai: item.nilai
+                }))
+            );
+
+        }
+
+        console.log("RENDER VIEW");
+        console.log("TOTAL DATA :", hasil.length);
+
+        res.render(
+            "admin/hasil/index",
+            {
+                hasil,
+                role: req.session.user.role
+            }
         );
 
     }
 
-    catch(err){
+    catch (err) {
 
         console.log(err);
 
@@ -84,9 +142,10 @@ exports.detail = async (req, res) => {
 
         }
 
-        const jawaban = await hasilModel.getDetailJawaban(
-            req.params.id
-        );
+        const jawaban =
+            await hasilModel.getDetailJawaban(
+                req.params.id
+            );
 
         res.render(
             "admin/hasil/detail",
@@ -96,7 +155,9 @@ exports.detail = async (req, res) => {
             }
         );
 
-    } catch (err) {
+    }
+
+    catch (err) {
 
         console.log(err);
 

@@ -1,0 +1,692 @@
+<%- include("../../partials/header",{title:"Analisis Ujian"}) %>
+
+<%- include("../../partials/sidebar") %>
+
+<div class="main">
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <div>
+
+        <h2 class="fw-bold">
+
+            <i class="bi bi-graph-up-arrow"></i>
+
+            Analisis Hasil Ujian
+
+        </h2>
+
+        <p class="text-muted mb-0">
+
+            Analisis statistik hasil ujian siswa
+
+        </p>
+
+    </div>
+
+</div>
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <form method="GET">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <select
+                        name="ujian"
+                        class="form-select">
+
+                        <option value="">
+
+                            Pilih Ujian
+
+                        </option>
+
+                        <% daftarUjian.forEach(item=>{ %>
+
+<option
+    value="<%= item.id %>"
+    <%= ujianDipilih==item.id ? "selected" : "" %>>
+
+    <%= item.nama_mapel %> | <%= item.nama_ujian %>
+
+</option>
+
+<% }) %>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <button
+                        class="btn btn-primary w-100">
+
+                        <i class="bi bi-search"></i>
+
+                        Analisis
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<% if(statistik){ %>
+
+<div class="row mt-4">
+
+    <div class="col-md-3 mb-3">
+
+        <div class="card border-primary shadow-sm">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+
+                    Jumlah Peserta
+
+                </small>
+
+                <h2>
+
+                    <%= statistik.jumlahPeserta %>
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <div class="card border-success shadow-sm">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+
+                    Nilai Tertinggi
+
+                </small>
+
+                <h2>
+
+                    <%= statistik.nilaiTertinggi %>
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <div class="card border-danger shadow-sm">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+
+                    Nilai Terendah
+
+                </small>
+
+                <h2>
+
+                    <%= statistik.nilaiTerendah %>
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <div class="card border-warning shadow-sm">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+
+                    Rata-rata
+
+                </small>
+
+                <h2>
+
+                    <%= statistik.rataRata %>
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+
+                    Median
+
+                </small>
+
+                <h2>
+
+                    <%= statistik.median %>
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+
+                    Standar Deviasi
+
+                </small>
+
+                <h2>
+
+                    <%= statistik.standarDeviasi %>
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+
+                    Lulus
+
+                </small>
+
+                <h2 class="text-success">
+
+                    <%= statistik.lulus %>
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+
+                    Tidak Lulus
+
+                </small>
+
+                <h2 class="text-danger">
+
+                    <%= statistik.tidakLulus %>
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="card shadow-sm mt-4">
+
+    <div class="card-header">
+
+        <h5 class="mb-0">
+
+            Distribusi Nilai
+
+        </h5>
+
+    </div>
+
+    <div class="card-body">
+
+        <canvas
+            id="grafikDistribusi"
+            height="90">
+
+        </canvas>
+
+    </div>
+
+</div>
+
+<div class="row mt-4">
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-danger text-white">
+
+                <b>
+
+                    Top 5 Soal Tersulit
+
+                </b>
+
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-sm">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Soal</th>
+
+                        <th>% Benar</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <% statistik.soalSulit.forEach(item=>{ %>
+
+                        <tr>
+
+                            <td>
+
+                                Soal <%= item.nomor %>
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-danger">
+
+                                    <%= item.persentase %> %
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-success text-white">
+
+                <b>
+
+                    Top 5 Soal Termudah
+
+                </b>
+
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-sm">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Soal</th>
+
+                        <th>% Benar</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <% statistik.soalMudah.forEach(item=>{ %>
+
+                        <tr>
+
+                            <td>
+
+                                Soal <%= item.nomor %>
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-success">
+
+                                    <%= item.persentase %> %
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="card shadow-sm mt-4">
+
+<div class="card-header">
+
+<h5 class="mb-0">
+
+Analisis Butir Soal
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<div class="table-responsive">
+
+<table class="table table-bordered table-hover align-middle">
+
+<thead class="table-primary">
+
+<tr>
+
+<th>No</th>
+
+<th>Benar</th>
+
+<th>Salah</th>
+
+<th>% Benar</th>
+
+<th>% Salah</th>
+
+<th>Tingkat Kesukaran</th>
+
+<th>Status</th>
+
+<th>Rekomendasi</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<% statistik.butir.forEach(item=>{ %>
+
+<tr>
+
+<td>
+
+<b>
+
+<%= item.nomor %>
+
+</b>
+
+</td>
+
+<td class="text-success">
+
+<%= item.benar %>
+
+</td>
+
+<td class="text-danger">
+
+<%= item.salah %>
+
+</td>
+
+<td>
+
+<%= item.persentase %> %
+
+</td>
+
+<td>
+
+<%= item.persentaseSalah %> %
+
+</td>
+
+<td>
+
+<span class="badge bg-<%= item.badge %>">
+
+<%= item.kategori %>
+
+</span>
+
+</td>
+
+<td>
+
+<%= item.status %>
+
+</td>
+
+<td>
+
+<%= item.rekomendasi %>
+
+</td>
+
+</tr>
+
+<% }) %>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<% } %>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<% if(statistik){ %>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const distribusi = <%- JSON.stringify(statistik.distribusi || []) %>;
+
+    const canvas = document.getElementById("grafikDistribusi");
+
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+
+    new Chart(ctx, {
+
+        type: "bar",
+
+        data: {
+
+            labels: [
+
+                "0 - 9",
+                "10 - 19",
+                "20 - 29",
+                "30 - 39",
+                "40 - 49",
+                "50 - 59",
+                "60 - 69",
+                "70 - 79",
+                "80 - 89",
+                "90 - 100"
+
+            ],
+
+            datasets: [
+
+                {
+
+                    label: "Jumlah Siswa",
+
+                    data: distribusi,
+
+                    borderWidth: 1,
+
+                    borderRadius: 6,
+
+                    backgroundColor: [
+
+                        "#0d6efd",
+                        "#198754",
+                        "#ffc107",
+                        "#dc3545",
+                        "#6f42c1",
+                        "#20c997",
+                        "#fd7e14",
+                        "#0dcaf0",
+                        "#6610f2",
+                        "#198754"
+
+                    ]
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    display: false
+
+                },
+
+                tooltip: {
+
+                    callbacks: {
+
+                        label: function(context){
+
+                            return context.parsed.y + " siswa";
+
+                        }
+
+                    }
+
+                }
+
+            },
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+
+                        precision: 0
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+});
+
+</script>
+
+<% } %>
+
+</div>
+
+<%- include("../../partials/footer") %>

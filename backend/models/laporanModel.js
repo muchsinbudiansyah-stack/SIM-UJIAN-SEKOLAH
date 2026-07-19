@@ -225,13 +225,152 @@ exports.getUjian = () => {
 
         db.all(
 
-            "SELECT id, nama_ujian FROM ujian ORDER BY nama_ujian",
+            `
+            SELECT
+
+                ujian.id,
+
+                ujian.nama_ujian,
+
+                mapel.nama_mapel
+
+            FROM ujian
+
+            LEFT JOIN mapel
+                ON ujian.mapel_id = mapel.id
+
+            ORDER BY
+
+                mapel.nama_mapel,
+
+                ujian.nama_ujian
+            `,
 
             [],
 
             (err, rows) => {
 
-                if (err) return reject(err);
+                if (err) {
+
+                    return reject(err);
+
+                }
+
+                resolve(rows);
+
+            }
+
+        );
+
+    });
+
+};
+
+// ======================================
+// HASIL BERDASARKAN FILTER
+// ======================================
+
+exports.getHasilFilter = (filter) => {
+
+    return new Promise((resolve, reject) => {
+
+        let sql = `
+        SELECT
+
+            h.*,
+
+            s.nama,
+
+            s.nisn,
+
+            k.nama AS kelas,
+
+            m.nama_mapel,
+
+            u.nama_ujian
+
+        FROM hasil_ujian h
+
+        JOIN siswa s
+            ON h.siswa_id = s.id
+
+        JOIN kelas k
+            ON s.kelas_id = k.id
+
+        JOIN ujian u
+            ON h.ujian_id = u.id
+
+        JOIN mapel m
+            ON u.mapel_id = m.id
+
+        WHERE 1=1
+        `;
+
+        const params = [];
+
+        // ==========================
+        // FILTER KELAS
+        // ==========================
+
+        if(filter.kelas){
+
+            sql += `
+            AND s.kelas_id = ?
+            `;
+
+            params.push(filter.kelas);
+
+        }
+
+        // ==========================
+        // FILTER MAPEL
+        // ==========================
+
+        if(filter.mapel){
+
+            sql += `
+            AND u.mapel_id = ?
+            `;
+
+            params.push(filter.mapel);
+
+        }
+
+        // ==========================
+        // FILTER UJIAN
+        // ==========================
+
+        if(filter.ujian){
+
+            sql += `
+            AND h.ujian_id = ?
+            `;
+
+            params.push(filter.ujian);
+
+        }
+
+        sql += `
+        ORDER BY
+
+            h.nilai DESC,
+
+            s.nama ASC
+        `;
+
+        db.all(
+
+            sql,
+
+            params,
+
+            (err, rows)=>{
+
+                if(err){
+
+                    return reject(err);
+
+                }
 
                 resolve(rows);
 

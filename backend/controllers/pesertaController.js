@@ -154,19 +154,29 @@ exports.mulaiUjian = async (req, res) => {
 
         if (!urutanSoal) {
 
-            let semuaSoal = await pesertaModel.getSemuaSoal(
+            let semuaSoal =
+    await pesertaModel.getSemuaSoal(
+        ujian.mapel_id
+    );
 
-                ujian.mapel_id
+// Acak soal bila diaktifkan
+if (ujian.acak_soal == 1) {
 
-            );
+    semuaSoal.sort(() => Math.random() - 0.5);
 
-            if (ujian.acak_soal == 1) {
+}
 
-                semuaSoal.sort(() => Math.random() - 0.5);
+// Ambil sesuai jumlah soal ujian
+semuaSoal =
+    semuaSoal.slice(
+        0,
+        ujian.jumlah_soal
+    );
 
-            }
-
-            const daftarId = semuaSoal.map(s => s.id);
+const daftarId =
+    semuaSoal.map(
+        s => s.id
+    );
 
             await pesertaModel.simpanUrutanSoal(
 
@@ -188,11 +198,11 @@ exports.mulaiUjian = async (req, res) => {
 
         const soalId = urutanSoal[nomor - 1];
 
-        const soal = await pesertaModel.getSoalById(
-
-            soalId
-
-        );
+        const soal =
+    await pesertaModel.getSoalById(
+        soalId,
+        ujian.mapel_id
+    );
 
         if (!soal) {
 

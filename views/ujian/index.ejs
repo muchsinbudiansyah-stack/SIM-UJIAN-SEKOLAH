@@ -8,15 +8,23 @@
 
         <div>
 
-            <h2>Data Ujian</h2>
+            <h2 class="mb-1">
+
+                Data Ujian
+
+            </h2>
 
             <small class="text-muted">
+
                 Manajemen Jadwal Ujian CBT
+
             </small>
 
         </div>
 
-        <a href="/ujian/tambah" class="btn btn-primary">
+        <a
+            href="/ujian/tambah"
+            class="btn btn-primary">
 
             <i class="bi bi-plus-circle"></i>
 
@@ -26,121 +34,279 @@
 
     </div>
 
+    <% if(role==="guru"){ %>
+
+        <div class="card shadow-sm mb-3">
+
+            <div class="card-body">
+
+                <form
+                    method="GET"
+                    action="/ujian">
+
+                    <div class="row align-items-end">
+
+                        <div class="col-md-5">
+
+                            <label class="form-label">
+
+                                Filter Mata Pelajaran
+
+                            </label>
+
+                            <select
+
+                                name="mapel"
+
+                                class="form-select"
+
+                                onchange="this.form.submit()"
+
+                            >
+
+                                <% mapel.forEach(function(item){ %>
+
+                                    <option
+
+                                        value="<%= item.id %>"
+
+                                        <%= String(selectedMapel)==String(item.id) ? "selected" : "" %>
+
+                                    >
+
+                                        <%= item.nama_mapel %>
+
+                                    </option>
+
+                                <% }) %>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    <% } %>
+
     <div class="card shadow-sm">
 
         <div class="card-body">
 
-            <table class="table table-bordered table-hover align-middle">
+            <div class="table-responsive">
 
-                <thead class="table-primary">
+                <table class="table table-bordered table-hover align-middle">
 
-                    <tr>
+                    <thead class="table-primary">
 
-                        <th width="60">No</th>
-                        <th>Nama Ujian</th>
-                        <th>Mata Pelajaran</th>
-                        <th>Kelas</th>
-                        <th>Guru</th>
-                        <th>Durasi</th>
-                        <th>Status</th>
-                        <th>Peserta</th>
-                        <th width="200">Aksi</th>
+                        <tr>
 
-                    </tr>
+                            <th width="60">
 
-                </thead>
+                                No
 
-                <tbody>
+                            </th>
 
-                <% if(ujian.length===0){ %>
+                            <th>
 
-                    <tr>
+                                Nama Ujian
 
-                        <td colspan="8" class="text-center">
+                            </th>
 
-                            Belum ada data ujian.
+                            <th>
 
-                        </td>
+                                Mata Pelajaran
 
-                    </tr>
+                            </th>
 
-                <% } %>
+                            <th>
 
-                <% ujian.forEach((item,index)=>{ %>
+                                Kelas
 
-                    <tr>
+                            </th>
 
-                        <td><%= index+1 %></td>
+                            <th>
 
-                        <td><%= item.nama_ujian %></td>
+                                Guru
 
-                        <td><%= item.nama_mapel %></td>
+                            </th>
 
-                        <td><%= item.nama_kelas %></td>
+                            <th width="90">
 
-                        <td><%= item.nama_guru %></td>
+                                Durasi
 
-                        <td><%= item.durasi %> Menit</td>
+                            </th>
 
-                        <td>
-                            <td>
-            <a href="/ujian/peserta/<%= item.id %>" class="btn btn-info btn-sm">
-                <i class="bi bi-people"></i> Peserta
-            </a>
-        </td>
+                            <th width="100">
 
-                            <% if(item.status==1){ %>
+                                Status
 
-                                <span class="badge bg-success">
+                            </th>
 
-                                    Aktif
+                            <th width="110">
 
-                                </span>
+                                Peserta
 
-                            <% } else { %>
+                            </th>
 
-                                <span class="badge bg-secondary">
+                            <th width="220">
 
-                                    Nonaktif
+                                Aksi
 
-                                </span>
+                            </th>
 
-                            <% } %>
+                        </tr>
 
-                        </td>
+                    </thead>
 
-                        <td>
+                    <tbody>
 
-                            <a
-                                href="/ujian/edit/<%= item.id %>"
-                                class="btn btn-warning btn-sm">
+                        <% if(ujian.length===0){ %>
 
-                                <i class="bi bi-pencil-square"></i>
+                            <tr>
 
-                                Edit
+                                <td
+                                    colspan="9"
+                                    class="text-center text-muted">
 
-                            </a>
+                                    Belum ada data ujian.
 
-                            <a
-                                href="/ujian/hapus/<%= item.id %>"
-                                class="btn btn-danger btn-sm"
-                                onclick="return confirm('Yakin ingin menghapus ujian ini?')">
+                                </td>
 
-                                <i class="bi bi-trash"></i>
+                            </tr>
 
-                                Hapus
+                        <% } %>
 
-                            </a>
+                        <% ujian.forEach((item,index)=>{ %>
 
-                        </td>
+                            <tr>
 
-                    </tr>
+                                <td>
 
-                <% }) %>
+                                    <%= index+1 %>
 
-                </tbody>
+                                </td>
 
-            </table>
+                                <td>
+
+                                    <strong>
+
+                                        <%= item.nama_ujian %>
+
+                                    </strong>
+
+                                </td>
+
+                                <td>
+
+                                    <span class="badge bg-primary">
+
+                                        <%= item.nama_mapel %>
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <%= item.nama_kelas %>
+
+                                </td>
+
+                                <td>
+
+                                    <%= item.nama_guru %>
+
+                                </td>
+
+                                <td>
+
+                                    <%= item.durasi %> Menit
+
+                                </td>
+
+                                <td>
+
+                                    <% if(item.status==1){ %>
+
+                                        <span class="badge bg-success">
+
+                                            Aktif
+
+                                        </span>
+
+                                    <% }else{ %>
+
+                                        <span class="badge bg-secondary">
+
+                                            Nonaktif
+
+                                        </span>
+
+                                    <% } %>
+
+                                </td>
+
+                                <td>
+
+                                    <a
+
+                                        href="/ujian/peserta/<%= item.id %>"
+
+                                        class="btn btn-info btn-sm">
+
+                                        <i class="bi bi-people"></i>
+
+                                        Peserta
+
+                                    </a>
+
+                                </td>
+
+                                <td>
+
+                                    <a
+
+                                        href="/ujian/edit/<%= item.id %>"
+
+                                        class="btn btn-warning btn-sm">
+
+                                        <i class="bi bi-pencil-square"></i>
+
+                                        Edit
+
+                                    </a>
+
+                                    <a
+
+                                        href="/ujian/hapus/<%= item.id %>"
+
+                                        class="btn btn-danger btn-sm"
+
+                                        onclick="return confirm('Yakin ingin menghapus ujian ini?')">
+
+                                        <i class="bi bi-trash"></i>
+
+                                        Hapus
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 

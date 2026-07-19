@@ -309,3 +309,297 @@ exports.getSemuaNilai = () => {
     });
 
 };
+
+// ======================================
+// STATISTIK PER UJIAN
+// ======================================
+
+exports.getStatistikUjian = (ujianId)=>{
+
+    return new Promise((resolve,reject)=>{
+
+        db.get(
+
+            `
+
+            SELECT
+
+                COUNT(*) jumlahPeserta,
+
+                MAX(nilai) nilaiTertinggi,
+
+                MIN(nilai) nilaiTerendah,
+
+                ROUND(AVG(nilai),2) rataRata
+
+            FROM hasil_ujian
+
+            WHERE ujian_id=?
+
+            `,
+
+            [ujianId],
+
+            (err,row)=>{
+
+                if(err){
+
+                    reject(err);
+
+                }else{
+
+                    resolve(row);
+
+                }
+
+            }
+
+        );
+
+    });
+
+};
+
+// ======================================
+// AMBIL SEMUA NILAI
+// ======================================
+
+exports.getNilaiByUjian = (ujianId)=>{
+
+    return new Promise((resolve,reject)=>{
+
+        db.all(
+
+            `
+
+            SELECT nilai
+
+            FROM hasil_ujian
+
+            WHERE ujian_id=?
+
+            ORDER BY nilai ASC
+
+            `,
+
+            [ujianId],
+
+            (err,rows)=>{
+
+                if(err){
+
+                    reject(err);
+
+                }else{
+
+                    resolve(rows);
+
+                }
+
+            }
+
+        );
+
+    });
+
+};
+
+// ======================================
+// JUMLAH LULUS
+// ======================================
+
+exports.getKelulusanByUjian = (ujianId,kkm)=>{
+
+    return new Promise((resolve,reject)=>{
+
+        db.get(
+
+            `
+
+            SELECT
+
+                SUM(
+
+                    CASE
+
+                    WHEN nilai>=?
+
+                    THEN 1
+
+                    ELSE 0
+
+                    END
+
+                ) lulus,
+
+                SUM(
+
+                    CASE
+
+                    WHEN nilai<?
+
+                    THEN 1
+
+                    ELSE 0
+
+                    END
+
+                ) tidakLulus
+
+            FROM hasil_ujian
+
+            WHERE ujian_id=?
+
+            `,
+
+            [
+
+                kkm,
+
+                kkm,
+
+                ujianId
+
+            ],
+
+            (err,row)=>{
+
+                if(err){
+
+                    reject(err);
+
+                }else{
+
+                    resolve(row);
+
+                }
+
+            }
+
+        );
+
+    });
+
+};
+
+// ======================================
+// DISTRIBUSI NILAI
+// ======================================
+
+exports.getDistribusiNilai = (ujianId)=>{
+
+    return new Promise((resolve,reject)=>{
+
+        db.all(
+
+            `
+
+            SELECT nilai
+
+            FROM hasil_ujian
+
+            WHERE ujian_id=?
+
+            `,
+
+            [ujianId],
+
+            (err,rows)=>{
+
+                if(err){
+
+                    reject(err);
+
+                }else{
+
+                    resolve(rows);
+
+                }
+
+            }
+
+        );
+
+    });
+
+};
+
+// ======================================
+// ANALISIS BUTIR SOAL
+// ======================================
+
+exports.getAnalisisButir = (ujianId)=>{
+
+    return new Promise((resolve,reject)=>{
+
+        db.all(
+
+            `
+            SELECT
+
+                bs.nomor,
+
+                SUM(
+
+                    CASE
+
+                    WHEN hj.jawaban=bs.kunci_jawaban
+
+                    THEN 1
+
+                    ELSE 0
+
+                    END
+
+                ) benar,
+
+                SUM(
+
+                    CASE
+
+                    WHEN hj.jawaban<>bs.kunci_jawaban
+
+                    THEN 1
+
+                    ELSE 0
+
+                    END
+
+                ) salah,
+
+                COUNT(*) jumlah
+
+            FROM hasil_jawaban hj
+
+            INNER JOIN bank_soal bs
+
+                ON hj.soal_id=bs.id
+
+            WHERE hj.ujian_id=?
+
+            GROUP BY bs.nomor
+
+            ORDER BY bs.nomor
+            `,
+
+            [ujianId],
+
+            (err,rows)=>{
+
+                if(err){
+
+                    reject(err);
+
+                }else{
+
+                    resolve(rows);
+
+                }
+
+            }
+
+        );
+
+    });
+
+};

@@ -26,6 +26,24 @@ exports.isAdmin = (req, res, next) => {
 
 };
 
+exports.isGuru = (req, res, next) => {
+
+    console.log("========== GURU SESSION ==========");
+    console.log(req.session.user);
+    console.log("==================================");
+
+    if (!req.session.user) {
+        return res.redirect("/");
+    }
+
+    if (req.session.user.role !== "guru") {
+        return res.send("Akses ditolak.");
+    }
+
+    next();
+
+};
+
 exports.isSiswa = (req, res, next) => {
 
     console.log("=================================");
@@ -34,7 +52,7 @@ exports.isSiswa = (req, res, next) => {
     console.log("=================================");
 
     if (!req.session.user) {
-        return res.redirect("/peserta/login");
+        return res.redirect("/");
     }
 
     if (req.session.user.role !== "siswa") {
@@ -42,5 +60,33 @@ exports.isSiswa = (req, res, next) => {
     }
 
     next();
+
+};
+
+// ======================================
+// GURU ATAU ADMIN
+// ======================================
+
+exports.isGuruOrAdmin = (req,res,next)=>{
+
+    if(!req.session.user){
+
+        return res.redirect("/");
+
+    }
+
+    if(
+
+        req.session.user.role==="admin" ||
+
+        req.session.user.role==="guru"
+
+    ){
+
+        return next();
+
+    }
+
+    return res.send("Akses ditolak.");
 
 };

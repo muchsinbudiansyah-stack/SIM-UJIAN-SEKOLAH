@@ -14,21 +14,20 @@ exports.getAnalisisButir = (ujian_id) => {
             SELECT
 
                 bs.id,
-
+                bs.id AS nomor,
                 bs.pertanyaan,
 
                 COUNT(js.id) AS jumlah_dijawab,
 
-                COALESCE(SUM(js.benar),0) AS jumlah_benar,
+                COALESCE(SUM(js.benar),0) AS benar,
 
-                COUNT(js.id)-COALESCE(SUM(js.benar),0) AS jumlah_salah
+                COUNT(js.id) - COALESCE(SUM(js.benar),0) AS salah
 
             FROM bank_soal bs
 
             LEFT JOIN jawaban_siswa js
 
                 ON bs.id = js.soal_id
-
                 AND js.ujian_id = ?
 
             GROUP BY bs.id
@@ -40,41 +39,89 @@ exports.getAnalisisButir = (ujian_id) => {
 
             (err, rows) => {
 
-                if(err){
+                if (err) {
 
                     return reject(err);
 
                 }
 
-                rows.forEach(item=>{
+                rows.forEach(item => {
 
                     const total = Number(item.jumlah_dijawab);
+                    const benar = Number(item.benar);
+                    const salah = Number(item.salah);
 
-                    const benar = Number(item.jumlah_benar);
+                    item.total = total;
 
-                    item.persen =
+                    item.persentase =
+                        total > 0
+                            ? ((benar / total) * 100).toFixed(2)
+                            : "0.00";
 
-                        total>0
+                    item.persentaseSalah =
+                        total > 0
+                            ? ((salah / total) * 100).toFixed(2)
+                            : "0.00";
 
-                        ? ((benar/total)*100).toFixed(2)
+                    // ===========================
+                    // Tingkat Kesukaran
+                    // ===========================
 
-                        : "0.00";
+                    if (Number(item.persentase) >= 80) {
 
-                    if(item.persen>=80){
+                        item.kategori = "Mudah";
+                        item.badge = "success";
 
-                        item.kategori="Mudah";
+                    } else if (Number(item.persentase) >= 40) {
+
+                        item.kategori = "Sedang";
+                        item.badge = "warning";
+
+                    } else {
+
+                        item.kategori = "Sulit";
+                        item.badge = "danger";
 
                     }
 
-                    else if(item.persen>=40){
+                    // ===========================
+                    // Status Soal
+                    // ===========================
 
-                        item.kategori="Sedang";
+                    if (Number(item.persentase) >= 90) {
+
+                        item.status = "Terlalu Mudah";
+
+                    } else if (Number(item.persentase) <= 20) {
+
+                        item.status = "Terlalu Sulit";
+
+                    } else {
+
+                        item.status = "Baik";
 
                     }
 
-                    else{
+                    // ===========================
+                    // Rekomendasi
+                    // ===========================
 
-                        item.kategori="Sulit";
+                    switch (item.status) {
+
+                        case "Baik":
+                            item.rekomendasi = "Dipertahankan";
+                            break;
+
+                        case "Terlalu Mudah":
+                            item.rekomendasi = "Direvisi";
+                            break;
+
+                        case "Terlalu Sulit":
+                            item.rekomendasi = "Direvisi";
+                            break;
+
+                        default:
+                            item.rekomendasi = "-";
 
                     }
 
@@ -87,5 +134,33 @@ exports.getAnalisisButir = (ujian_id) => {
         );
 
     });
+
+};
+
+// ======================================
+// TOP 5 SOAL TERSULIT
+// ======================================
+
+exports.getTopSoalSulit = async (ujian_id) => {
+
+    const data = await exports.getAnalisisButir(ujian_id);
+
+    return data
+        .sort((a, b) => Number(a.persentase) - Number(b.persentase))
+        .slice(0, 5);
+
+};
+
+// ======================================
+// TOP 5 SOAL TERMUDAH
+// ======================================
+
+exports.getTopSoalMudah = async (ujian_id) => {
+
+    const data = await exports.getAnalisisButir(ujian_id);
+
+    return data
+        .sort((a, b) => Number(b.persentase) - Number(a.persentase))
+        .slice(0, 5);
 
 };

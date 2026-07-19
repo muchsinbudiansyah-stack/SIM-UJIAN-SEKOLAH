@@ -1,0 +1,182 @@
+<%- include("../../partials/header",{title:"Tambah Soal"}) %>
+
+<%- include("../../partials/sidebar") %>
+
+<div class="content">
+
+<div class="container-fluid">
+
+<h2 class="mb-4">
+Tambah Soal
+</h2>
+
+<form method="POST" action="/guru/bank-soal/simpan">
+
+<div class="mb-3">
+
+<label>Mata Pelajaran</label>
+
+<select
+name="mapel_id"
+class="form-select">
+
+<% mapel.forEach(m=>{ %>
+
+<option value="<%= m.id %>">
+
+<%= m.nama_mapel %>
+
+</option>
+
+<% }) %>
+
+</select>
+
+</div>
+
+<div class="mb-3">
+
+<label>Jenis</label>
+
+<select
+name="jenis"
+class="form-select">
+
+<option value="Pilihan Ganda">
+
+Pilihan Ganda
+
+</option>
+
+<option value="Essay">
+
+Essay
+
+</option>
+
+</select>
+
+</div>
+
+<div class="mb-3">
+
+<label>Pertanyaan</label>
+
+<textarea
+name="pertanyaan"
+class="form-control"
+rows="5"></textarea>
+
+</div>
+
+<div class="mb-3">
+
+<label>Pilihan A</label>
+
+<input
+type="text"
+name="pilihan_a"
+class="form-control">
+
+</div>
+
+<div class="mb-3">
+
+<label>Pilihan B</label>
+
+<input
+type="text"
+name="pilihan_b"
+class="form-control">
+
+</div>
+
+<div class="mb-3">
+
+<label>Pilihan C</label>
+
+<input
+type="text"
+name="pilihan_c"
+class="form-control">
+
+</div>
+
+<div class="mb-3">
+
+<label>Pilihan D</label>
+
+<input
+type="text"
+name="pilihan_d"
+class="form-control">
+
+</div>
+
+<div class="mb-3">
+
+<label>Pilihan E</label>
+
+<input
+type="text"
+name="pilihan_e"
+class="form-control">
+
+</div>
+
+<div class="mb-3">
+
+<label>Jawaban</label>
+
+<select
+name="jawaban"
+class="form-select">
+
+<option>A</option>
+
+<option>B</option>
+
+<option>C</option>
+
+<option>D</option>
+
+<option>E</option>
+
+</select>
+
+</div>
+
+<div class="mb-3">
+
+<label>Bobot</label>
+
+<input
+type="number"
+name="bobot"
+value="1"
+class="form-control">
+
+</div>
+
+<button
+class="btn btn-primary">
+
+Simpan
+
+</button>
+
+<a
+href="/guru/bank-soal"
+class="btn btn-secondary">
+
+Kembali
+
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+<%- include("../../partials/footer") %>

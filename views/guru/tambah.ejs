@@ -4,98 +4,171 @@
 
 <div class="main">
 
-<h2 class="mb-4">
+    <div class="container-fluid">
 
-Tambah Guru
+        <div class="card shadow">
 
-</h2>
+            <div class="card-header bg-success text-white">
 
-<div class="card shadow">
+                <h4 class="mb-0">
 
-<div class="card-body">
+                    <i class="bi bi-person-plus-fill"></i>
 
-<form action="/guru/simpan" method="POST">
+                    Tambah Data Guru
 
-<div class="row">
+                </h4>
 
-<div class="col-md-6 mb-3">
+            </div>
 
-<label>NIP</label>
+            <div class="card-body">
 
-<input
-type="text"
-name="nip"
-class="form-control"
-required>
+                <form action="/guru/simpan" method="POST">
 
-</div>
+                    <div class="row">
 
-<div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-3">
 
-<label>Nama Guru</label>
+                            <label class="form-label">
 
-<input
-type="text"
-name="nama"
-class="form-control"
-required>
+                                NIP
 
-</div>
+                            </label>
 
-<div class="col-md-6 mb-3">
+                            <input
+                                type="text"
+                                name="nip"
+                                class="form-control"
+                                required>
 
-<label>Email</label>
+                        </div>
 
-<input
-type="email"
-name="email"
-class="form-control">
+                        <div class="col-md-6 mb-3">
 
-</div>
+                            <label class="form-label">
 
-<div class="col-md-6 mb-3">
+                                Nama Guru
 
-<label>No HP</label>
+                            </label>
 
-<input
-type="text"
-name="hp"
-class="form-control">
+                            <input
+                                type="text"
+                                name="nama"
+                                class="form-control"
+                                required>
 
-</div>
+                        </div>
 
-<div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-3">
 
-<label>Mata Pelajaran</label>
+                            <label class="form-label">
 
-<input
-type="text"
-name="mapel"
-class="form-control">
+                                Email
 
-</div>
+                            </label>
 
-</div>
+                            <input
+                                type="email"
+                                name="email"
+                                class="form-control">
 
-<button class="btn btn-success">
+                        </div>
 
-Simpan
+                        <div class="col-md-6 mb-3">
 
-</button>
+                            <label class="form-label">
 
-<a
-href="/guru"
-class="btn btn-secondary">
+                                No HP
 
-Kembali
+                            </label>
 
-</a>
+                            <input
+                                type="text"
+                                name="hp"
+                                class="form-control">
 
-</form>
+                        </div>
 
-</div>
+                    </div>
 
-</div>
+                    <hr>
+
+                    <h5 class="mb-3">
+
+                        Mata Pelajaran yang Diampu
+
+                    </h5>
+
+                    <div class="row">
+
+                        <% mapel.forEach(function(item){ %>
+
+                            <div class="col-lg-4 col-md-6 mb-2">
+
+                                <div class="form-check">
+
+                                    <input
+
+                                        class="form-check-input"
+
+                                        type="checkbox"
+
+                                        name="mapel"
+
+                                        value="<%= item.id %>"
+
+                                        id="mapel<%= item.id %>"
+
+                                    >
+
+                                    <label
+
+                                        class="form-check-label"
+
+                                        for="mapel<%= item.id %>">
+
+                                        <strong>
+
+                                            <%= item.nama_mapel %>
+
+                                        </strong>
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        <% }) %>
+
+                    </div>
+
+                    <hr>
+
+                    <button
+                        type="submit"
+                        class="btn btn-success">
+
+                        <i class="bi bi-save"></i>
+
+                        Simpan Guru
+
+                    </button>
+
+                    <a
+                        href="/guru"
+                        class="btn btn-secondary">
+
+                        Kembali
+
+                    </a>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 

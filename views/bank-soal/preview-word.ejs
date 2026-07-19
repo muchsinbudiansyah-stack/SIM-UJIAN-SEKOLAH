@@ -30,22 +30,29 @@
 
                 <label>Mata Pelajaran</label>
 
-                <select
-                    name="mapel_id"
-                    class="form-select"
-                    required>
+<div class="col-md-6">
 
-                    <% mapel.forEach(item=>{ %>
+    <label>Mata Pelajaran</label>
 
-                        <option value="<%= item.id %>">
+    <select
+        name="mapel_id"
+        class="form-select"
+        required
+    >
 
-                            <%= item.nama_mapel %>
+        <% mapel.forEach(function(item){ %>
 
-                        </option>
+            <option value="<%= item.id %>">
 
-                    <% }) %>
+                <%= item.nama_mapel %>
 
-                </select>
+            </option>
+
+        <% }) %>
+
+    </select>
+
+</div>
 
             </div>
 
@@ -53,22 +60,16 @@
 
                 <label>Guru</label>
 
-                <select
-                    name="guru_id"
-                    class="form-select"
-                    required>
-
-                    <% guru.forEach(item=>{ %>
-
-                        <option value="<%= item.id %>">
-
-                            <%= item.nama %>
-
-                        </option>
-
-                    <% }) %>
-
-                </select>
+<% if(role==="admin"){ %>
+<select name="guru_id" class="form-select" required>
+<% guru.forEach(item=>{ %>
+<option value="<%= item.id %>"><%= item.nama %></option>
+<% }) %>
+</select>
+<% }else{ %>
+<input type="text" class="form-control" value="<%= guru[0].nama %>" readonly>
+<input type="hidden" name="guru_id" value="<%= guru[0].id %>">
+<% } %>
 
             </div>
 

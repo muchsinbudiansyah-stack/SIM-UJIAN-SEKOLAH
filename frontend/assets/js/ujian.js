@@ -15,6 +15,9 @@ const formUjian = document.getElementById("formUjian");
 const pilihanJawaban =
     document.querySelectorAll("input[name='jawaban']");
 
+    const jawabanEssay =
+    document.getElementById("jawabanEssay");
+
 const ujian_id = window.CBT.ujian_id;
 const soal_id = window.CBT.soal_id;
 
@@ -327,33 +330,28 @@ heartbeatInterval = setInterval(()=>{
 },10000);
 
 // ======================================================
-// EVENT PILIHAN JAWABAN
+// EVENT PILIHAN JAWABAN (PG)
 // ======================================================
 
-pilihanJawaban.forEach((radio)=>{
+pilihanJawaban.forEach((radio) => {
 
-    radio.addEventListener("change",async function(){
+    radio.addEventListener("change", async function () {
 
-        // reset tampilan
-        document.querySelectorAll(".opsi").forEach(item=>{
+        document.querySelectorAll(".opsi").forEach(item => {
 
-            item.style.background="";
-
-            item.style.border="2px solid #ddd";
+            item.style.background = "";
+            item.style.border = "2px solid #ddd";
 
         });
 
-        // tandai jawaban aktif
-        this.parentElement.style.background="#d1e7dd";
-        this.parentElement.style.border="2px solid #198754";
+        this.parentElement.style.background = "#d1e7dd";
+        this.parentElement.style.border = "2px solid #198754";
 
-        // simpan jawaban
         await simpanJawaban(this.value);
 
-        // ubah warna nomor soal
-        const aktif=document.querySelector(".nomor-item.active");
+        const aktif = document.querySelector(".nomor-item.active");
 
-        if(aktif){
+        if (aktif) {
 
             aktif.classList.remove("active");
             aktif.classList.add("answered");
@@ -364,22 +362,73 @@ pilihanJawaban.forEach((radio)=>{
 
 });
 
+
+// ======================================================
+// AUTO SAVE ESSAY
+// ======================================================
+
+if (jawabanEssay) {
+
+    console.log("TEXTAREA DITEMUKAN");
+
+    let timerEssay;
+
+    jawabanEssay.addEventListener("input", function () {
+
+        console.log("MENGETIK :", this.value);
+
+        clearTimeout(timerEssay);
+
+        timerEssay = setTimeout(async () => {
+
+            console.log("DIKIRIM :", this.value);
+
+            await simpanJawaban(this.value);
+
+            const aktif = document.querySelector(".nomor-item.active");
+
+            if (aktif) {
+
+                aktif.classList.remove("active");
+                aktif.classList.add("answered");
+
+            }
+
+        }, 800);
+
+    });
+
+}
+
 // ======================================================
 // JIKA SUDAH ADA JAWABAN
 // ======================================================
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-    const checked=document.querySelector(
-        "input[name='jawaban']:checked"
-    );
+    const checked = document.querySelector(
+    "input[name='jawaban']:checked"
+);
 
-    if(checked){
+if (checked) {
 
-        checked.parentElement.style.background="#d1e7dd";
-        checked.parentElement.style.border="2px solid #198754";
+    checked.parentElement.style.background = "#d1e7dd";
+    checked.parentElement.style.border = "2px solid #198754";
+
+}
+
+if (jawabanEssay && jawabanEssay.value.trim() !== "") {
+
+    const aktif = document.querySelector(".nomor-item.active");
+
+    if (aktif) {
+
+        aktif.classList.remove("active");
+        aktif.classList.add("answered");
 
     }
+
+}
 
 });
 

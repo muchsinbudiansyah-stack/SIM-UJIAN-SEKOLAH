@@ -146,3 +146,154 @@ exports.getAktivitasTerbaru = () => {
     });
 
 };
+
+// ======================================
+// DASHBOARD GURU
+// ======================================
+
+exports.getStatistikGuru = (guruId) => {
+
+    return new Promise((resolve, reject) => {
+
+        const statistik = {};
+
+        // Jumlah soal guru
+        db.get(
+
+            "SELECT COUNT(*) AS total FROM bank_soal WHERE guru_id = ?",
+
+            [guruId],
+
+            (err, row) => {
+
+                if (err) return reject(err);
+
+                statistik.bankSoal = row.total;
+
+                // Jumlah ujian yang dibuat guru
+                db.get(
+
+                    "SELECT COUNT(*) AS total FROM ujian WHERE guru_id = ?",
+
+                    [guruId],
+
+                    (err, row) => {
+
+                        if (err) return reject(err);
+
+                        statistik.ujian = row.total;
+
+                        // Jumlah ujian sedang berlangsung
+                        db.get(
+
+                            `SELECT COUNT(*) AS total
+                             FROM monitor_ujian
+                             LEFT JOIN ujian
+                                ON monitor_ujian.ujian_id = ujian.id
+                             WHERE
+                                ujian.guru_id = ?
+                             AND
+                                monitor_ujian.status='Sedang Ujian'`,
+
+                            [guruId],
+
+                            (err, row) => {
+
+                                if (err) return reject(err);
+
+                                statistik.sedang = row.total;
+
+                                // Jumlah ujian selesai
+                                db.get(
+
+                                    `SELECT COUNT(*) AS total
+                                     FROM monitor_ujian
+                                     LEFT JOIN ujian
+                                        ON monitor_ujian.ujian_id = ujian.id
+                                     WHERE
+                                        ujian.guru_id = ?
+                                     AND
+                                        monitor_ujian.status='Selesai'`,
+
+                                    [guruId],
+
+                                    (err, row) => {
+
+                                        if (err) return reject(err);
+
+                                        statistik.selesai = row.total;
+
+                                        resolve(statistik);
+
+                                    }
+
+                                );
+
+                            }
+
+                        );
+
+                    }
+
+                );
+
+            }
+
+        );
+
+    });
+
+};
+
+// ======================================
+// AKTIVITAS GURU
+// ======================================
+
+exports.getAktivitasGuru = (guruId) => {
+
+    return new Promise((resolve, reject) => {
+
+        db.all(
+
+            `SELECT
+
+                ujian.nama_ujian,
+
+                monitor_ujian.status,
+
+                monitor_ujian.waktu_mulai,
+
+                monitor_ujian.waktu_selesai
+
+            FROM monitor_ujian
+
+            LEFT JOIN ujian
+                ON monitor_ujian.ujian_id = ujian.id
+
+            WHERE
+                ujian.guru_id = ?
+
+            ORDER BY
+                monitor_ujian.last_activity DESC
+
+            LIMIT 10`,
+
+            [guruId],
+
+            (err, rows) => {
+
+                if(err){
+
+                    return reject(err);
+
+                }
+
+                resolve(rows);
+
+            }
+
+        );
+
+    });
+
+};

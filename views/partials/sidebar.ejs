@@ -1,122 +1,152 @@
+<%
+const role = (user && user.role) ? user.role : "";
+%>
+
 <div class="sidebar">
 
     <div class="text-center mb-4">
-
-        <h3 class="fw-bold">
-
-            SIM-UJIAN
-
-        </h3>
-
-        <small>
-
-            Computer Based Test
-
-        </small>
-
+        <h3 class="fw-bold">SIM-UJIAN</h3>
+        <small>Computer Based Test</small>
     </div>
 
-    <a href="/admin/dashboard">
+    <% if(role==="admin"){ %>
 
-        <i class="bi bi-speedometer2"></i>
+        <a href="/admin/dashboard">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </a>
 
-        Dashboard
+        <a href="/guru">
+            <i class="bi bi-person-workspace"></i>
+            Guru
+        </a>
 
+        <a href="/kelas">
+            <i class="bi bi-building"></i>
+            Kelas
+        </a>
+
+        <a href="/mapel">
+            <i class="bi bi-book"></i>
+            Mata Pelajaran
+        </a>
+
+        <a href="/siswa">
+            <i class="bi bi-people"></i>
+            Siswa
+        </a>
+
+        <hr>
+
+        <small class="text-white-50">CBT</small>
+
+        <a href="/bank-soal">
+            <i class="bi bi-journal-text"></i>
+            Bank Soal
+        </a>
+
+        <a href="/ujian">
+            <i class="bi bi-file-earmark-text"></i>
+            Ujian
+        </a>
+
+        <a href="/monitor">
+            <i class="bi bi-display"></i>
+            Monitoring
+        </a>
+
+        <a href="/hasil">
+            <i class="bi bi-bar-chart"></i>
+            Hasil
+        </a>
+
+        <a href="/ranking">
+            <i class="bi bi-trophy-fill"></i>
+            Ranking
+        </a>
+
+        <a href="/laporan">
+            <i class="bi bi-printer"></i>
+            Laporan
+        </a>
+
+    <% } %>
+
+    <% if(role==="guru"){ %>
+
+        <a href="/guru/dashboard">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </a>
+
+        <a href="/bank-soal">
+            <i class="bi bi-journal-text"></i>
+            Bank Soal Saya
+        </a>
+
+        <a href="/ujian">
+            <i class="bi bi-file-earmark-text"></i>
+            Ujian Saya
+        </a>
+
+        <a href="/laporan-guru">
+            <i class="bi bi-bar-chart"></i>
+            Laporan Nilai
+        </a>
+
+        <li class="nav-item">
+    <a href="/analisis" class="nav-link">
+        <i class="bi bi-graph-up-arrow"></i>
+        <span>Analisis Ujian</span>
     </a>
+</li>
 
-    <a href="/guru">
+    <% } %>
 
-        <i class="bi bi-person-workspace"></i>
+    <% if(role==="siswa"){ %>
 
-        Guru
+        <a href="/siswa/dashboard">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </a>
 
-    </a>
+        <a href="/peserta">
+            <i class="bi bi-file-earmark-text"></i>
+            Daftar Ujian
+        </a>
 
-    <a href="/kelas">
+        <a href="/hasil">
+            <i class="bi bi-bar-chart"></i>
+            Nilai Saya
+        </a>
 
-        <i class="bi bi-building"></i>
-
-        Kelas
-
-    </a>
-
-    <a href="/mapel">
-
-        <i class="bi bi-book"></i>
-
-        Mata Pelajaran
-
-    </a>
-
-    <a href="/siswa">
-
-        <i class="bi bi-people"></i>
-
-        Siswa
-
-    </a>
+    <% } %>
 
     <hr>
 
-    <small class="text-white-50">
+    <li>
 
-        CBT
+<a href="/ranking-guru">
 
-    </small>
+<i class="bi bi-trophy"></i>
 
-    <a href="/bank-soal">
-
-        <i class="bi bi-journal-text"></i>
-
-        Bank Soal
-
-    </a>
-
-    <a href="/ujian">
-
-    <i class="bi bi-file-earmark-text"></i>
-
-    Ujian
+Ranking
 
 </a>
 
-<a href="/monitor">
-
-    <i class="bi bi-display"></i>
-
-    Monitoring
-
-</a>
-
-<a href="/hasil">
-
-    <i class="bi bi-bar-chart"></i>
-
-    Hasil
-
-</a>
-
-<a href="/ranking">
-    <i class="bi bi-trophy-fill"></i>
-    Ranking
-</a>
-
-    <a href="/laporan">
-
-        <i class="bi bi-printer"></i>
-
-        Laporan
-
-    </a>
-
-    <hr>
+</li>
 
     <a href="/logout">
-
         <i class="bi bi-box-arrow-right"></i>
-
         Logout
-
     </a>
 
 </div>
+
+<a href="/analisis">
+
+<i class="bi bi-graph-up-arrow"></i>
+
+Analisis Ujian
+
+</a>

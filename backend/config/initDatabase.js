@@ -78,6 +78,32 @@ db.serialize(() => {
     `);
 
     // ==========================================
+// RELASI GURU - MAPEL
+// ==========================================
+
+db.run(`
+CREATE TABLE IF NOT EXISTS guru_mapel (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    guru_id INTEGER NOT NULL,
+
+    mapel_id INTEGER NOT NULL,
+
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(guru_id, mapel_id),
+
+    FOREIGN KEY(guru_id)
+        REFERENCES guru(id),
+
+    FOREIGN KEY(mapel_id)
+        REFERENCES mapel(id)
+
+)
+`);
+
+    // ==========================================
     // KELAS
     // ==========================================
 
@@ -414,5 +440,59 @@ db.serialize(() => {
         });
 
     });
+
+});
+
+// ======================================
+// MIGRASI DATA GURU -> GURU_MAPEL
+// ======================================
+
+db.serialize(() => {
+
+    db.all(
+        `
+        SELECT
+            g.id,
+            g.mapel,
+            m.id AS mapel_id
+        FROM guru g
+        LEFT JOIN mapel m
+            ON g.mapel = m.nama_mapel
+        `,
+        [],
+        (err, rows) => {
+
+            if (err) {
+
+                console.log(err.message);
+                return;
+
+            }
+
+            rows.forEach(item => {
+
+                if (!item.mapel_id) return;
+
+                db.run(
+                    `
+                    INSERT OR IGNORE
+                    INTO guru_mapel
+                    (
+                        guru_id,
+                        mapel_id
+                    )
+                    VALUES (?,?)
+                    `,
+                    [
+                        item.id,
+                        item.mapel_id
+                    ]
+                );
+
+            });
+
+        }
+
+    );
 
 });

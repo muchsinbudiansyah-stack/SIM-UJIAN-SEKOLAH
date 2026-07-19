@@ -189,37 +189,47 @@ exports.getSemuaSoal = (mapel_id) => {
             `
             SELECT
 
-                id,
+    id,
 
-                pertanyaan,
+    mapel_id,
 
-                pilihan_a,
-                pilihan_b,
-                pilihan_c,
-                pilihan_d,
-                pilihan_e,
+    guru_id,
 
-                jenis,
+    pertanyaan,
 
-                gambar,
+    pilihan_a,
 
-                audio,
+    pilihan_b,
 
-                video,
+    pilihan_c,
 
-                bobot
+    pilihan_d,
 
-            FROM bank_soal
+    pilihan_e,
 
-            WHERE
+    jawaban,
 
-                mapel_id = ?
+    jenis,
 
-            AND
+    gambar,
 
-                status = 1
+    audio,
 
-            ORDER BY id ASC
+    video,
+
+    bobot
+
+FROM bank_soal
+
+WHERE
+
+    mapel_id = ?
+
+AND
+
+    status = 1
+
+ORDER BY id ASC
             `,
 
             [
@@ -670,43 +680,38 @@ exports.getJawabanDanKunci = (ujian_id, siswa_id) => {
             `
             SELECT
 
+                js.soal_id,
+
                 js.jawaban,
 
-                bs.jawaban AS kunci
+                bs.jawaban AS kunci,
+
+                bs.jenis,
+
+                bs.bobot
 
             FROM jawaban_siswa js
 
             INNER JOIN bank_soal bs
-
                 ON js.soal_id = bs.id
 
             WHERE
-
                 js.ujian_id = ?
-
             AND
-
                 js.siswa_id = ?
             `,
 
             [
-
                 ujian_id,
-
                 siswa_id
-
             ],
 
             (err, rows) => {
 
-                if(err){
-
+                if (err) {
                     reject(err);
-
-                }else{
-
+                } else {
                     resolve(rows);
-
                 }
 
             }
@@ -1068,7 +1073,7 @@ exports.getUrutanSoal = (ujian_id, siswa_id) => {
 // AMBIL SOAL BERDASARKAN ID
 // ======================================
 
-exports.getSoalById = (id) => {
+exports.getSoalById = (id, mapelId) => {
 
     return new Promise((resolve, reject) => {
 
@@ -1080,9 +1085,19 @@ exports.getSoalById = (id) => {
             FROM bank_soal
 
             WHERE id = ?
+
+            AND mapel_id = ?
+
+            AND status = 1
             `,
 
-            [id],
+            [
+
+                id,
+
+                mapelId
+
+            ],
 
             (err, row) => {
 

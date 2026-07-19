@@ -4,21 +4,29 @@ const router = express.Router();
 const hasilController = require("../controllers/hasilController");
 const auth = require("../middleware/auth");
 
+// ======================================
+// DAFTAR HASIL
+// ======================================
+
 router.get(
 
     "/",
 
-    auth.isAdmin,
+    auth.isGuruOrAdmin,
 
     hasilController.index
 
 );
 
+// ======================================
+// DETAIL HASIL
+// ======================================
+
 router.get(
 
     "/detail/:id",
 
-    auth.isAdmin,
+    auth.isGuruOrAdmin,
 
     hasilController.detail
 

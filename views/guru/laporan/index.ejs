@@ -1,0 +1,395 @@
+<%- include("../../partials/header",{title:"Laporan Nilai"}) %>
+
+<%- include("../../partials/sidebar") %>
+
+<div class="main">
+
+<div class="row mb-4">
+
+    <div class="col-md-6">
+
+        <h2 class="fw-bold">
+
+            <i class="bi bi-printer"></i>
+
+            Laporan Nilai
+
+        </h2>
+
+        <p class="text-muted">
+
+            Cetak dan lihat hasil ujian siswa
+
+        </p>
+
+    </div>
+
+</div>
+
+<div class="card shadow-sm mb-4">
+
+<div class="card-body">
+
+<form method="GET" action="/laporan-guru">
+
+<div class="row">
+
+<div class="col-md-6">
+
+<label class="form-label">
+
+Pilih Ujian
+
+</label>
+
+<select
+name="ujian"
+class="form-select">
+
+<option value="">
+
+-- Pilih Ujian --
+
+</option>
+
+<% daftarUjian.forEach(item=>{ %>
+
+<option
+value="<%= item.id %>"
+<%= ujianDipilih==item.id ? "selected":"" %>>
+
+<%= item.nama_ujian %> - <%= item.nama_mapel %>
+
+</option>
+
+<% }) %>
+
+</select>
+
+</div>
+
+<div class="col-md-2 d-flex align-items-end">
+
+<button
+class="btn btn-primary w-100">
+
+<i class="bi bi-search"></i>
+
+Tampilkan
+
+</button>
+
+</div>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+<% if(hasil.length>0){ %>
+
+<div class="row mb-4">
+
+<div class="col-md-3">
+
+<div class="card shadow-sm">
+
+<div class="card-body text-center">
+
+<h6 class="text-muted">
+
+Peserta
+
+</h6>
+
+<h2 class="text-primary">
+
+<%= statistik.peserta %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card shadow-sm">
+
+<div class="card-body text-center">
+
+<h6 class="text-muted">
+
+Rata-rata
+
+</h6>
+
+<h2 class="text-success">
+
+<%= statistik.rataRata %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card shadow-sm">
+
+<div class="card-body text-center">
+
+<h6 class="text-muted">
+
+Tertinggi
+
+</h6>
+
+<h2 class="text-warning">
+
+<%= statistik.tertinggi %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card shadow-sm">
+
+<div class="card-body text-center">
+
+<h6 class="text-muted">
+
+Terendah
+
+</h6>
+
+<h2 class="text-danger">
+
+<%= statistik.terendah %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card shadow-sm">
+
+<div class="card-body">
+
+<div class="d-flex justify-content-between mb-3">
+
+<h5>
+
+Daftar Nilai
+
+</h5>
+
+<div>
+
+<div class="d-flex gap-2">
+
+<a
+href="/laporan-guru/excel/<%= ujianDipilih %>"
+class="btn btn-success btn-sm">
+
+<i class="bi bi-file-earmark-excel"></i>
+
+Excel
+
+</a>
+
+<a
+href="/laporan-guru/pdf/<%= ujianDipilih %>"
+target="_blank"
+class="btn btn-danger btn-sm">
+
+<i class="bi bi-file-earmark-pdf"></i>
+
+PDF
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="table-responsive">
+
+<table
+id="tabelLaporan"
+class="table table-striped table-hover">
+
+<thead class="table-primary">
+
+<tr>
+
+<th>No</th>
+
+<th>Nama</th>
+
+<th>NISN</th>
+
+<th>Kelas</th>
+
+<th>Nilai</th>
+
+<th>Benar</th>
+
+<th>Salah</th>
+
+<th>Kosong</th>
+
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<%
+
+let no=1;
+
+hasil.forEach(item=>{
+
+%>
+
+<tr>
+
+<td>
+
+<%= no++ %>
+
+</td>
+
+<td>
+
+<%= item.nama %>
+
+</td>
+
+<td>
+
+<%= item.nisn %>
+
+</td>
+
+<td>
+
+<%= item.kelas %>
+
+</td>
+
+<td>
+
+<span class="badge bg-success">
+
+<%= item.nilai %>
+
+</span>
+
+</td>
+
+<td>
+
+<%= item.benar %>
+
+</td>
+
+<td>
+
+<%= item.salah %>
+
+</td>
+
+<td>
+
+<%= item.kosong %>
+
+</td>
+
+<td>
+
+<%= item.status %>
+
+</td>
+
+</tr>
+
+<%
+
+})
+
+%>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<% } %>
+
+</div>
+
+<script>
+
+$(function(){
+
+$("#tabelLaporan").DataTable({
+
+pageLength:10,
+
+language:{
+
+search:"Cari :",
+
+lengthMenu:"Tampilkan _MENU_ data",
+
+zeroRecords:"Data tidak ditemukan",
+
+info:"Menampilkan _START_ - _END_ dari _TOTAL_ data",
+
+paginate:{
+
+previous:"←",
+
+next:"→"
+
+}
+
+}
+
+});
+
+});
+
+</script>
+
+<%- include("../../partials/footer") %>

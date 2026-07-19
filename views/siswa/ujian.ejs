@@ -185,104 +185,207 @@ class="pertanyaan">
 
 </div>
 
+<div style="background:yellow;padding:8px;margin:10px 0;">
+    Jenis Soal: <%= soal.jenis %>
+</div>
+
 <!-- ===================================== -->
-<!-- PILIHAN -->
+<!-- MULTIMEDIA SOAL -->
 <!-- ===================================== -->
 
-<div
-class="pilihan">
+<% if(soal.gambar){ %>
 
-<label class="opsi">
+<div class="mt-4 text-center">
 
-<input
-type="radio"
-name="jawaban"
-value="A"
-<%= jawaban && jawaban.jawaban=="A" ? "checked" : "" %>>
-
-<span>
-
-<strong>A.</strong>
-
-<%= soal.pilihan_a %>
-
-</span>
-
-</label>
-
-<label class="opsi">
-
-<input
-type="radio"
-name="jawaban"
-value="B"
-<%= jawaban && jawaban.jawaban=="B" ? "checked" : "" %>>
-
-<span>
-
-<strong>B.</strong>
-
-<%= soal.pilihan_b %>
-
-</span>
-
-</label>
-
-<label class="opsi">
-
-<input
-type="radio"
-name="jawaban"
-value="C"
-<%= jawaban && jawaban.jawaban=="C" ? "checked" : "" %>>
-
-<span>
-
-<strong>C.</strong>
-
-<%= soal.pilihan_c %>
-
-</span>
-
-</label>
-
-<label class="opsi">
-
-<input
-type="radio"
-name="jawaban"
-value="D"
-<%= jawaban && jawaban.jawaban=="D" ? "checked" : "" %>>
-
-<span>
-
-<strong>D.</strong>
-
-<%= soal.pilihan_d %>
-
-</span>
-
-</label>
-
-<label class="opsi">
-
-<input
-type="radio"
-name="jawaban"
-value="E"
-<%= jawaban && jawaban.jawaban=="E" ? "checked" : "" %>>
-
-<span>
-
-<strong>E.</strong>
-
-<%= soal.pilihan_e %>
-
-</span>
-
-</label>
+    <img
+        src="/uploads/gambar/soal/<%= soal.gambar %>"
+        class="img-fluid rounded border shadow-sm"
+        style="max-height:450px;">
 
 </div>
+
+<% } %>
+
+<% if(soal.audio){ %>
+
+<div class="mt-4">
+
+    <label class="fw-bold mb-2">
+
+        Audio Soal
+
+    </label>
+
+    <audio
+        controls
+        controlsList="nodownload"
+        preload="metadata"
+        style="width:100%;">
+
+        <source
+            src="/uploads/audio/soal/<%= soal.audio %>">
+
+        Browser Anda tidak mendukung audio.
+
+    </audio>
+
+</div>
+
+<% } %>
+
+<% if(soal.video){ %>
+
+<div class="mt-4">
+
+    <label class="fw-bold mb-2">
+
+        Video Soal
+
+    </label>
+
+    <video
+        controls
+        controlsList="nodownload"
+        preload="metadata"
+        style="width:100%;max-height:500px;">
+
+        <source
+            src="/uploads/video/soal/<%= soal.video %>">
+
+        Browser Anda tidak mendukung video.
+
+    </video>
+
+</div>
+
+<% } %>
+
+<!-- ===================================== -->
+<!-- JAWABAN -->
+<!-- ===================================== -->
+
+<%
+const jenisSoal = (soal.jenis || "").trim().toUpperCase();
+%>
+
+<% if (jenisSoal === "ESSAY") { %>
+
+<div style="background:red;color:white;padding:15px;font-size:22px;text-align:center;">
+    === MODE ESSAY BERHASIL ===
+</div>
+
+<div class="mt-4">
+
+    <label class="form-label fw-bold">
+        Jawaban Essay
+    </label>
+
+    <textarea
+        class="form-control"
+        id="jawabanEssay"
+        name="jawaban"
+        rows="8"
+        placeholder="Tulis jawaban Anda di sini..."><%= jawaban ? jawaban.jawaban : "" %></textarea>
+
+</div>
+
+<% } else { %>
+
+<div class="pilihan">
+
+    <label class="opsi">
+
+        <input
+            type="radio"
+            name="jawaban"
+            value="A"
+            <%= jawaban && jawaban.jawaban=="A" ? "checked" : "" %>>
+
+        <span>
+
+            <strong>A.</strong>
+
+            <%= soal.pilihan_a %>
+
+        </span>
+
+    </label>
+
+    <label class="opsi">
+
+        <input
+            type="radio"
+            name="jawaban"
+            value="B"
+            <%= jawaban && jawaban.jawaban=="B" ? "checked" : "" %>>
+
+        <span>
+
+            <strong>B.</strong>
+
+            <%= soal.pilihan_b %>
+
+        </span>
+
+    </label>
+
+    <label class="opsi">
+
+        <input
+            type="radio"
+            name="jawaban"
+            value="C"
+            <%= jawaban && jawaban.jawaban=="C" ? "checked" : "" %>>
+
+        <span>
+
+            <strong>C.</strong>
+
+            <%= soal.pilihan_c %>
+
+        </span>
+
+    </label>
+
+    <label class="opsi">
+
+        <input
+            type="radio"
+            name="jawaban"
+            value="D"
+            <%= jawaban && jawaban.jawaban=="D" ? "checked" : "" %>>
+
+        <span>
+
+            <strong>D.</strong>
+
+            <%= soal.pilihan_d %>
+
+        </span>
+
+    </label>
+
+    <label class="opsi">
+
+        <input
+            type="radio"
+            name="jawaban"
+            value="E"
+            <%= jawaban && jawaban.jawaban=="E" ? "checked" : "" %>>
+
+        <span>
+
+            <strong>E.</strong>
+
+            <%= soal.pilihan_e %>
+
+        </span>
+
+    </label>
+
+</div>
+
+<% } %>
 
 <!-- akhir pilihan -->
 

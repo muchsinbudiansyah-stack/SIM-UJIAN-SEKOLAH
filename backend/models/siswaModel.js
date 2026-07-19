@@ -298,3 +298,43 @@ exports.delete = (id) => {
 
 };
 
+// ======================================
+// AMBIL SISWA BERDASARKAN KELAS
+// ======================================
+exports.getByKelas = (kelasId) => {
+
+    return new Promise((resolve, reject) => {
+
+        db.all(
+
+            `
+            SELECT
+                id,
+                nisn,
+                nama,
+                jenis_kelamin,
+                kelas_id
+            FROM siswa
+            WHERE kelas_id = ?
+            ORDER BY nama ASC
+            `,
+
+            [kelasId],
+
+            (err, rows) => {
+
+                if (err) {
+
+                    return reject(err);
+
+                }
+
+                resolve(rows);
+
+            }
+
+        );
+
+    });
+
+};

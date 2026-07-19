@@ -35,21 +35,16 @@
 
                         <label class="form-label">Mata Pelajaran</label>
 
-                        <select name="mapel_id" class="form-select" required>
-
-                            <% mapel.forEach(item=>{ %>
-
-                                <option
-                                    value="<%= item.id %>"
-                                    <%= item.id==soal.mapel_id ? "selected" : "" %>>
-
-                                    <%= item.nama_mapel %>
-
-                                </option>
-
-                            <% }) %>
-
-                        </select>
+<% if(role==="admin"){ %>
+<select name="mapel_id" class="form-select" required>
+<% mapel.forEach(item=>{ %>
+<option value="<%= item.id %>" <%= item.id==soal.mapel_id ? "selected" : "" %>><%= item.nama_mapel %></option>
+<% }) %>
+</select>
+<% }else{ %>
+<input type="text" class="form-control" value="<%= mapel[0].nama_mapel %>" readonly>
+<input type="hidden" name="mapel_id" value="<%= mapel[0].id %>">
+<% } %>
 
                     </div>
 
@@ -57,21 +52,16 @@
 
                         <label class="form-label">Guru</label>
 
-                        <select name="guru_id" class="form-select" required>
-
-                            <% guru.forEach(item=>{ %>
-
-                                <option
-                                    value="<%= item.id %>"
-                                    <%= item.id==soal.guru_id ? "selected" : "" %>>
-
-                                    <%= item.nama %>
-
-                                </option>
-
-                            <% }) %>
-
-                        </select>
+<% if(role==="admin"){ %>
+<select name="guru_id" class="form-select" required>
+<% guru.forEach(item=>{ %>
+<option value="<%= item.id %>" <%= item.id==soal.guru_id ? "selected" : "" %>><%= item.nama %></option>
+<% }) %>
+</select>
+<% }else{ %>
+<input type="text" class="form-control" value="<%= guru[0].nama %>" readonly>
+<input type="hidden" name="guru_id" value="<%= guru[0].id %>">
+<% } %>
 
                     </div>
 
@@ -218,13 +208,17 @@
 
                 </div>
 
-                <!-- ============================================== -->
-<!-- GAMBAR -->
+<!-- ============================================== -->
+<!-- MULTIMEDIA SOAL -->
 <!-- ============================================== -->
 
 <div class="row">
 
-    <div class="col-md-12">
+    <!-- ================================= -->
+    <!-- GAMBAR -->
+    <!-- ================================= -->
+
+    <div class="col-md-12 mb-4">
 
         <label class="form-label">
 
@@ -243,7 +237,7 @@
                         class="img-fluid rounded border"
                         style="max-height:300px;">
 
-                    <div class="mt-3">
+                    <div class="mt-2">
 
                         <small class="text-muted">
 
@@ -257,27 +251,19 @@
 
             </div>
 
-        <% } else { %>
+        <% }else{ %>
 
             <div class="alert alert-secondary">
 
-                Belum ada gambar.
+                Tidak ada gambar.
 
             </div>
 
         <% } %>
 
-    </div>
-
-</div>
-
-<div class="row">
-
-    <div class="col-md-12 mb-4">
-
         <label class="form-label">
 
-            Ganti Gambar (Opsional)
+            Ganti Gambar
 
         </label>
 
@@ -285,22 +271,151 @@
             type="file"
             id="gambarSoal"
             name="gambar"
-            accept=".jpg,.jpeg,.png,.webp"
-            class="form-control">
-
-        <small class="text-muted">
-
-            Kosongkan jika tidak ingin mengganti gambar.
-
-        </small>
+            class="form-control"
+            accept=".jpg,.jpeg,.png,.webp,.gif">
 
         <div class="mt-3">
 
             <img
                 id="previewGambar"
-                src=""
                 class="img-fluid rounded border"
                 style="display:none;max-height:250px;">
+
+        </div>
+
+    </div>
+
+    <!-- ================================= -->
+    <!-- AUDIO -->
+    <!-- ================================= -->
+
+    <div class="col-md-12 mb-4">
+
+        <label class="form-label">
+
+            Audio Saat Ini
+
+        </label>
+
+        <% if(soal.audio){ %>
+
+            <audio controls style="width:100%;">
+
+                <source
+                    src="/uploads/audio/soal/<%= soal.audio %>">
+
+            </audio>
+
+            <div class="mt-2">
+
+                <small class="text-muted">
+
+                    <%= soal.audio %>
+
+                </small>
+
+            </div>
+
+        <% }else{ %>
+
+            <div class="alert alert-secondary">
+
+                Tidak ada audio.
+
+            </div>
+
+        <% } %>
+
+        <label class="form-label mt-3">
+
+            Ganti Audio
+
+        </label>
+
+        <input
+            type="file"
+            id="audioSoal"
+            name="audio"
+            class="form-control"
+            accept=".mp3,.wav,.ogg,.m4a">
+
+        <div class="mt-3">
+
+            <audio
+                id="previewAudio"
+                controls
+                style="display:none;width:100%;">
+
+            </audio>
+
+        </div>
+
+    </div>
+
+    <!-- ================================= -->
+    <!-- VIDEO -->
+    <!-- ================================= -->
+
+    <div class="col-md-12 mb-4">
+
+        <label class="form-label">
+
+            Video Saat Ini
+
+        </label>
+
+        <% if(soal.video){ %>
+
+            <video
+                controls
+                style="width:100%;max-height:420px;">
+
+                <source
+                    src="/uploads/video/soal/<%= soal.video %>">
+
+            </video>
+
+            <div class="mt-2">
+
+                <small class="text-muted">
+
+                    <%= soal.video %>
+
+                </small>
+
+            </div>
+
+        <% }else{ %>
+
+            <div class="alert alert-secondary">
+
+                Tidak ada video.
+
+            </div>
+
+        <% } %>
+
+        <label class="form-label mt-3">
+
+            Ganti Video
+
+        </label>
+
+        <input
+            type="file"
+            id="videoSoal"
+            name="video"
+            class="form-control"
+            accept=".mp4,.webm,.mov,.avi,.mkv">
+
+        <div class="mt-3">
+
+            <video
+                id="previewVideo"
+                controls
+                style="display:none;width:100%;max-height:350px;">
+
+            </video>
 
         </div>
 
@@ -334,18 +449,81 @@
 
 <!-- Script untuk menampilkan preview gambar yang dipilih -->
 <script>
-    document.getElementById('gambarSoal').addEventListener('change', function(event) {
-        const preview = document.getElementById('previewGambar');
-        const file = event.target.files[0];
-        
-        if (file) {
-            preview.src = URL.createObjectURL(file);
-            preview.style.display = 'block';
-        } else {
-            preview.src = '';
-            preview.style.display = 'none';
-        }
-    });
+// ===========================
+// PREVIEW GAMBAR
+// ===========================
+
+const gambarInput=document.getElementById("gambarSoal");
+const gambarPreview=document.getElementById("previewGambar");
+
+gambarInput.addEventListener("change",function(){
+
+    const file=this.files[0];
+
+    if(!file){
+
+        gambarPreview.style.display="none";
+
+        return;
+
+    }
+
+    gambarPreview.src=URL.createObjectURL(file);
+
+    gambarPreview.style.display="block";
+
+});
+
+// ===========================
+// PREVIEW AUDIO
+// ===========================
+
+const audioInput=document.getElementById("audioSoal");
+const audioPreview=document.getElementById("previewAudio");
+
+audioInput.addEventListener("change",function(){
+
+    const file=this.files[0];
+
+    if(!file){
+
+        audioPreview.style.display="none";
+
+        return;
+
+    }
+
+    audioPreview.src=URL.createObjectURL(file);
+
+    audioPreview.style.display="block";
+
+});
+
+// ===========================
+// PREVIEW VIDEO
+// ===========================
+
+const videoInput=document.getElementById("videoSoal");
+const videoPreview=document.getElementById("previewVideo");
+
+videoInput.addEventListener("change",function(){
+
+    const file=this.files[0];
+
+    if(!file){
+
+        videoPreview.style.display="none";
+
+        return;
+
+    }
+
+    videoPreview.src=URL.createObjectURL(file);
+
+    videoPreview.style.display="block";
+
+});
+
 </script>
 
 <%- include("../partials/footer") %>

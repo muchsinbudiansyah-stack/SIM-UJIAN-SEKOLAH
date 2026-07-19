@@ -12,7 +12,7 @@
 
             <small class="text-muted">
 
-                Konfigurasi ujian CBT
+                Konfigurasi Ujian CBT
 
             </small>
 
@@ -31,7 +31,9 @@
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label">
+
                             Nama Ujian
+
                         </label>
 
                         <input
@@ -46,7 +48,9 @@
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label">
+
                             Mata Pelajaran
+
                         </label>
 
                         <select
@@ -54,7 +58,11 @@
                             class="form-select"
                             required>
 
-                            <option value="">-- Pilih Mata Pelajaran --</option>
+                            <option value="">
+
+                                -- Pilih Mata Pelajaran --
+
+                            </option>
 
                             <% mapel.forEach(item=>{ %>
 
@@ -73,7 +81,9 @@
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label">
+
                             Kelas
+
                         </label>
 
                         <select
@@ -81,7 +91,11 @@
                             class="form-select"
                             required>
 
-                            <option value="">-- Pilih Kelas --</option>
+                            <option value="">
+
+                                -- Pilih Kelas --
+
+                            </option>
 
                             <% kelas.forEach(item=>{ %>
 
@@ -97,10 +111,14 @@
 
                     </div>
 
+                    <% if(role==="admin"){ %>
+
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label">
+
                             Guru
+
                         </label>
 
                         <select
@@ -108,7 +126,11 @@
                             class="form-select"
                             required>
 
-                            <option value="">-- Pilih Guru --</option>
+                            <option value="">
+
+                                -- Pilih Guru --
+
+                            </option>
 
                             <% guru.forEach(item=>{ %>
 
@@ -124,10 +146,37 @@
 
                     </div>
 
+                    <% } else { %>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Guru
+
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="<%= guru[0].nama %>"
+                            readonly>
+
+                        <input
+                            type="hidden"
+                            name="guru_id"
+                            value="<%= guru[0].id %>">
+
+                    </div>
+
+                    <% } %>
+
                     <div class="col-md-4 mb-3">
 
                         <label class="form-label">
+
                             Tanggal
+
                         </label>
 
                         <input
@@ -141,7 +190,9 @@
                     <div class="col-md-4 mb-3">
 
                         <label class="form-label">
+
                             Jam Mulai
+
                         </label>
 
                         <input
@@ -155,7 +206,9 @@
                     <div class="col-md-4 mb-3">
 
                         <label class="form-label">
+
                             Jam Selesai
+
                         </label>
 
                         <input
@@ -169,7 +222,9 @@
                     <div class="col-md-4 mb-3">
 
                         <label class="form-label">
+
                             Durasi (Menit)
+
                         </label>
 
                         <input
@@ -185,7 +240,9 @@
                     <div class="col-md-4 mb-3">
 
                         <label class="form-label">
+
                             Jumlah Soal
+
                         </label>
 
                         <input
@@ -201,7 +258,9 @@
                     <div class="col-md-4 mb-3">
 
                         <label class="form-label">
+
                             Token Ujian
+
                         </label>
 
                         <input

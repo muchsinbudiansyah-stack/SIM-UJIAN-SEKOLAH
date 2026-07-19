@@ -7,37 +7,190 @@ const validateSoal = require("../helpers/importValidator");
 // DAFTAR MAPEL (FOLDER)
 // ======================================
 exports.index = async (req, res) => {
+
     try {
-        const mapel = await bankSoalModel.getMapel();
-        res.render("bank-soal/index", {
-            mapel: mapel
-        });
-    } catch (err) {
-        console.log(err);
-        res.send(err.message);
+
+        let mapel = [];
+
+        // ==========================
+        // ADMIN
+        // ==========================
+        if (req.session.user.role === "admin") {
+
+            mapel =
+                await bankSoalModel.getMapel();
+
+        }
+
+        // ==========================
+        // GURU
+        // ==========================
+        else {
+
+            const guru =
+                await bankSoalModel.getGuruByNIP(
+                    req.session.user.username
+                );
+
+            if (!guru) {
+
+                return res.send(
+                    "Data guru tidak ditemukan."
+                );
+
+            }
+
+            mapel =
+                await bankSoalModel.getMapelGuru(
+                    guru.id
+                );
+
+        }
+
+        res.render(
+
+            "bank-soal/index",
+
+            {
+
+                mapel,
+
+                role: req.session.user.role
+
+            }
+
+        );
+
     }
+
+    catch (err) {
+
+        console.log(err);
+
+        res.send(err.message);
+
+    }
+
 };
 
 // ======================================
-// DAFTAR SOAL PER MAPEL (ISI FOLDER)
+// DAFTAR SOAL BERDASARKAN MAPEL
 // ======================================
 exports.getByMapel = async (req, res) => {
-    try {
-        const mapelId = req.params.id;
-        const soal = await bankSoalModel.getByMapelId(mapelId);
-        
-        // Kita juga perlu tahu nama mapelnya untuk judul halaman
-        const daftarMapel = await bankSoalModel.getMapel();
-        const mapelTerpilih = daftarMapel.find(m => m.id == mapelId);
 
-        res.render("bank-soal/mapel", {
-            soal,
-            mapel: mapelTerpilih
-        });
-    } catch (err) {
-        console.log(err);
-        res.send(err.message);
+    try {
+
+        const mapelId = req.params.id;
+
+        let soal;
+
+        // ======================================
+        // ADMIN
+        // ======================================
+
+        if (req.session.user.role === "admin") {
+
+            soal =
+                await bankSoalModel.getByMapelId(
+                    mapelId
+                );
+
+        }
+
+        // ======================================
+        // GURU
+        // ======================================
+
+        else {
+
+            const guru =
+                await bankSoalModel.getGuruByNIP(
+                    req.session.user.username
+                );
+
+            if (!guru) {
+
+                return res.send(
+                    "Data guru tidak ditemukan."
+                );
+
+            }
+
+            // Validasi bahwa mapel ini memang
+            // dimiliki oleh guru login
+            const boleh =
+                await bankSoalModel.isGuruMengajarMapel(
+
+                    guru.id,
+
+                    mapelId
+
+                );
+
+            if (!boleh) {
+
+                return res.send(
+                    "Anda tidak memiliki akses ke mata pelajaran tersebut."
+                );
+
+            }
+
+            soal =
+                await bankSoalModel.getByGuruAndMapel(
+
+                    guru.id,
+
+                    mapelId
+
+                );
+
+        }
+
+        // ======================================
+        // AMBIL DATA MAPEL
+        // ======================================
+
+        const mapel =
+            await bankSoalModel.getMapelById(
+                mapelId
+            );
+
+        if (!mapel) {
+
+            return res.send(
+                "Mata pelajaran tidak ditemukan."
+            );
+
+        }
+
+        res.render(
+
+            "bank-soal/mapel",
+
+            {
+
+                soal,
+
+                mapel,
+
+                role: req.session.user.role,
+
+                user: req.session.user
+
+            }
+
+        );
+
     }
+
+    catch (err) {
+
+        console.log(err);
+
+        res.send(err.message);
+
+    }
+
 };
 
 // ======================================
@@ -47,15 +200,89 @@ exports.tambah = async (req, res) => {
 
     try {
 
-        const mapel = await bankSoalModel.getMapel();
-        const guru = await bankSoalModel.getGuru();
+        // =====================================
+        // ADMIN
+        // =====================================
 
-        res.render("bank-soal/tambah", {
-            mapel,
-            guru
-        });
+        if (req.session.user.role === "admin") {
 
-    } catch (err) {
+            const mapel =
+                await bankSoalModel.getMapel();
+
+            const guru =
+                await bankSoalModel.getGuru();
+
+            return res.render(
+
+                "bank-soal/tambah",
+
+                {
+
+                    mapel,
+
+                    guru,
+
+                    role: "admin"
+
+                }
+
+            );
+
+        }
+
+        // =====================================
+        // GURU
+        // =====================================
+
+        const guruLogin =
+            await bankSoalModel.getGuruByNIP(
+                req.session.user.username
+            );
+
+        if (!guruLogin) {
+
+            return res.send(
+                "Data guru tidak ditemukan."
+            );
+
+        }
+
+        const mapel =
+            await bankSoalModel.getMapelGuru(
+                guruLogin.id
+            );
+
+        if (!mapel.length) {
+
+            return res.send(
+                "Guru belum memiliki mata pelajaran."
+            );
+
+        }
+
+        res.render(
+
+            "bank-soal/tambah",
+
+            {
+
+                guru: [
+
+                    guruLogin
+
+                ],
+
+                mapel,
+
+                role: "guru"
+
+            }
+
+        );
+
+    }
+
+    catch (err) {
 
         console.log(err);
 
@@ -73,42 +300,104 @@ exports.simpan = async (req, res) => {
     try {
 
         let namaGambar = "";
+        let namaAudio = "";
+        let namaVideo = "";
 
-        // Jika guru meng-upload gambar
-        if (req.file) {
+        if (req.files) {
 
-            namaGambar = req.file.filename;
+            if (req.files.gambar && req.files.gambar.length > 0) {
+                namaGambar = req.files.gambar[0].filename;
+            }
+
+            if (req.files.audio && req.files.audio.length > 0) {
+                namaAudio = req.files.audio[0].filename;
+            }
+
+            if (req.files.video && req.files.video.length > 0) {
+                namaVideo = req.files.video[0].filename;
+            }
+
+        }
+
+        let guruId = req.body.guru_id;
+        let mapelId = req.body.mapel_id;
+
+        // =====================================
+        // LOGIN GURU
+        // =====================================
+
+        if (req.session.user.role === "guru") {
+
+            const guruLogin =
+                await bankSoalModel.getGuruByNIP(
+                    req.session.user.username
+                );
+
+            if (!guruLogin) {
+
+                return res.send(
+                    "Data guru tidak ditemukan."
+                );
+
+            }
+
+            guruId = guruLogin.id;
+
+            // VALIDASI MAPEL YANG DIPILIH
+            const boleh =
+                await bankSoalModel.isGuruMengajarMapel(
+
+                    guruLogin.id,
+
+                    mapelId
+
+                );
+
+            if (!boleh) {
+
+                return res.send(
+                    "Anda tidak berhak menyimpan soal pada mata pelajaran tersebut."
+                );
+
+            }
 
         }
 
         await bankSoalModel.create({
 
-            mapel_id: req.body.mapel_id,
-            guru_id: req.body.guru_id,
+            mapel_id: mapelId,
+
+            guru_id: guruId,
 
             jenis: req.body.jenis,
 
             pertanyaan: req.body.pertanyaan,
 
             pilihan_a: req.body.pilihan_a,
+
             pilihan_b: req.body.pilihan_b,
+
             pilihan_c: req.body.pilihan_c,
+
             pilihan_d: req.body.pilihan_d,
+
             pilihan_e: req.body.pilihan_e,
 
-            // Untuk Benar/Salah gunakan jawaban_bs jika dipilih
             jawaban:
+
                 req.body.jenis === "BS"
+
                     ? req.body.jawaban_bs
+
                     : req.body.jawaban,
 
             bobot: req.body.bobot,
 
             gambar: namaGambar,
 
-            audio: "",
+            audio: namaAudio,
 
-            video: "",
+            video: namaVideo,
 
             status: req.body.status
 
@@ -116,7 +405,9 @@ exports.simpan = async (req, res) => {
 
         res.redirect("/bank-soal");
 
-    } catch (err) {
+    }
+
+    catch (err) {
 
         console.log(err);
 
@@ -133,17 +424,125 @@ exports.edit = async (req, res) => {
 
     try {
 
-        const soal = await bankSoalModel.findById(req.params.id);
-        const mapel = await bankSoalModel.getMapel();
-        const guru = await bankSoalModel.getGuru();
+        const soal =
+            await bankSoalModel.findById(
+                req.params.id
+            );
 
-        res.render("bank-soal/edit", {
-            soal,
-            mapel,
-            guru
-        });
+        if (!soal) {
 
-    } catch (err) {
+            return res.send(
+                "Soal tidak ditemukan."
+            );
+
+        }
+
+        // =====================================
+        // ADMIN
+        // =====================================
+
+        if (req.session.user.role === "admin") {
+
+            const mapel =
+                await bankSoalModel.getMapel();
+
+            const guru =
+                await bankSoalModel.getGuru();
+
+            return res.render(
+
+                "bank-soal/edit",
+
+                {
+
+                    soal,
+
+                    mapel,
+
+                    guru,
+
+                    role: "admin"
+
+                }
+
+            );
+
+        }
+
+        // =====================================
+        // GURU
+        // =====================================
+
+        const guruLogin =
+            await bankSoalModel.getGuruByNIP(
+                req.session.user.username
+            );
+
+        if (!guruLogin) {
+
+            return res.send(
+                "Data guru tidak ditemukan."
+            );
+
+        }
+
+        // Guru hanya boleh mengedit soal miliknya
+        if (Number(soal.guru_id) !== Number(guruLogin.id)) {
+
+            return res.send(
+                "Anda tidak mempunyai hak mengedit soal ini."
+            );
+
+        }
+
+        // Pastikan mapel soal memang termasuk mapel guru
+        const boleh =
+            await bankSoalModel.isGuruMengajarMapel(
+
+                guruLogin.id,
+
+                soal.mapel_id
+
+            );
+
+        if (!boleh) {
+
+            return res.send(
+                "Anda tidak mempunyai akses ke mata pelajaran tersebut."
+            );
+
+        }
+
+        const mapel =
+            await bankSoalModel.getMapelGuru(
+                guruLogin.id
+            );
+
+        res.render(
+
+            "bank-soal/edit",
+
+            {
+
+                soal,
+
+                mapel,
+
+                guru: [
+
+                    guruLogin
+
+                ],
+
+                role: "guru"
+
+            }
+
+        );
+
+    }
+
+    catch (err) {
 
         console.log(err);
 
@@ -156,60 +555,154 @@ exports.edit = async (req, res) => {
 // ======================================
 // UPDATE SOAL
 // ======================================
-const fs = require('fs');
-const path = require('path');
-
 exports.update = async (req, res) => {
+
     try {
-        // 1. Ambil data lama
-        const soalLama = await bankSoalModel.findById(req.params.id);
+
+        const soalLama =
+            await bankSoalModel.findById(
+                req.params.id
+            );
 
         if (!soalLama) {
-            return res.send("Data soal tidak ditemukan.");
+
+            return res.send(
+                "Data soal tidak ditemukan."
+            );
+
         }
 
-        // 2. Gunakan gambar lama secara default jika tidak ada upload baru
         let namaGambar = soalLama.gambar;
+        let namaAudio = soalLama.audio;
+        let namaVideo = soalLama.video;
 
-        // 3. Jika guru mengunggah gambar baru
-        if (req.file) {
-            namaGambar = req.file.filename;
+        if (req.files) {
 
-            // Fitur Tambahan: Hapus file gambar lama dari server agar penyimpanan tidak cepat penuh
-            if (soalLama.gambar) {
-                // Sesuaikan path ini dengan struktur folder public/uploads Anda
-                const pathGambarLama = path.join(__dirname, '../../public/uploads/gambar/soal', soalLama.gambar);
-                
-                // Cek apakah file lama benar-benar ada di folder sebelum dihapus
-                if (fs.existsSync(pathGambarLama)) {
-                    fs.unlinkSync(pathGambarLama);
-                }
+            if (req.files.gambar && req.files.gambar.length > 0) {
+                namaGambar = req.files.gambar[0].filename;
             }
+
+            if (req.files.audio && req.files.audio.length > 0) {
+                namaAudio = req.files.audio[0].filename;
+            }
+
+            if (req.files.video && req.files.video.length > 0) {
+                namaVideo = req.files.video[0].filename;
+            }
+
         }
 
-        // 4. Update data ke database
-        await bankSoalModel.update(req.params.id, {
-            mapel_id: req.body.mapel_id,
-            guru_id: req.body.guru_id,
-            jenis: req.body.jenis,
-            pertanyaan: req.body.pertanyaan,
-            pilihan_a: req.body.pilihan_a,
-            pilihan_b: req.body.pilihan_b,
-            pilihan_c: req.body.pilihan_c,
-            pilihan_d: req.body.pilihan_d,
-            pilihan_e: req.body.pilihan_e,
-            jawaban: req.body.jenis === "BS" ? req.body.jawaban_bs : req.body.jawaban,
-            bobot: req.body.bobot,
-            gambar: namaGambar,
-            status: req.body.status
-        });
+        let guruId = req.body.guru_id;
+        let mapelId = req.body.mapel_id;
+
+        // =====================================
+        // LOGIN GURU
+        // =====================================
+
+        if (req.session.user.role === "guru") {
+
+            const guruLogin =
+                await bankSoalModel.getGuruByNIP(
+                    req.session.user.username
+                );
+
+            if (!guruLogin) {
+
+                return res.send(
+                    "Data guru tidak ditemukan."
+                );
+
+            }
+
+            // Guru hanya boleh mengedit soal miliknya
+            if (Number(soalLama.guru_id) !== Number(guruLogin.id)) {
+
+                return res.send(
+                    "Anda tidak memiliki akses."
+                );
+
+            }
+
+            guruId = guruLogin.id;
+
+            // Validasi mapel yang dipilih
+            const boleh =
+                await bankSoalModel.isGuruMengajarMapel(
+
+                    guruLogin.id,
+
+                    mapelId
+
+                );
+
+            if (!boleh) {
+
+                return res.send(
+                    "Anda tidak berhak memindahkan soal ke mata pelajaran tersebut."
+                );
+
+            }
+
+        }
+
+        await bankSoalModel.update(
+
+            req.params.id,
+
+            {
+
+                mapel_id: mapelId,
+
+                guru_id: guruId,
+
+                jenis: req.body.jenis,
+
+                pertanyaan: req.body.pertanyaan,
+
+                pilihan_a: req.body.pilihan_a,
+
+                pilihan_b: req.body.pilihan_b,
+
+                pilihan_c: req.body.pilihan_c,
+
+                pilihan_d: req.body.pilihan_d,
+
+                pilihan_e: req.body.pilihan_e,
+
+                jawaban:
+
+                    req.body.jenis === "BS"
+
+                        ? req.body.jawaban_bs
+
+                        : req.body.jawaban,
+
+                bobot: req.body.bobot,
+
+                gambar: namaGambar,
+
+                audio: namaAudio,
+
+                video: namaVideo,
+
+                status: req.body.status
+
+            }
+
+        );
 
         res.redirect("/bank-soal");
 
-    } catch (err) {
-        console.log(err);
-        res.send(err.message);
     }
+
+    catch (err) {
+
+        console.log(err);
+
+        res.send(err.message);
+
+    }
+
 };
 
 // ======================================
@@ -219,11 +712,76 @@ exports.hapus = async (req, res) => {
 
     try {
 
-        await bankSoalModel.delete(req.params.id);
+        const soal =
+            await bankSoalModel.findById(
+                req.params.id
+            );
+
+        if (!soal) {
+
+            return res.send(
+                "Data soal tidak ditemukan."
+            );
+
+        }
+
+        // =====================================
+        // LOGIN GURU
+        // =====================================
+
+        if (req.session.user.role === "guru") {
+
+            const guruLogin =
+                await bankSoalModel.getGuruByNIP(
+                    req.session.user.username
+                );
+
+            if (!guruLogin) {
+
+                return res.send(
+                    "Data guru tidak ditemukan."
+                );
+
+            }
+
+            // Guru hanya boleh menghapus soal miliknya
+            if (Number(soal.guru_id) !== Number(guruLogin.id)) {
+
+                return res.send(
+                    "Anda tidak memiliki akses menghapus soal ini."
+                );
+
+            }
+
+            // Pastikan mapel soal memang termasuk mapel guru
+            const boleh =
+                await bankSoalModel.isGuruMengajarMapel(
+
+                    guruLogin.id,
+
+                    soal.mapel_id
+
+                );
+
+            if (!boleh) {
+
+                return res.send(
+                    "Anda tidak memiliki akses ke mata pelajaran tersebut."
+                );
+
+            }
+
+        }
+
+        await bankSoalModel.delete(
+            req.params.id
+        );
 
         res.redirect("/bank-soal");
 
-    } catch (err) {
+    }
+
+    catch (err) {
 
         console.log(err);
 
@@ -236,9 +794,91 @@ exports.hapus = async (req, res) => {
 // ======================================
 // HALAMAN IMPORT WORD
 // ======================================
-exports.showImportWord = (req, res) => {
+exports.showImportWord = async (req, res) => {
 
-    res.render("bank-soal/import-word");
+    try {
+
+        // ============================
+        // ADMIN
+        // ============================
+
+        if (req.session.user.role === "admin") {
+
+            const mapel =
+                await bankSoalModel.getMapel();
+
+            const guru =
+                await bankSoalModel.getGuru();
+
+            return res.render(
+
+                "bank-soal/import-word",
+
+                {
+
+                    role: "admin",
+
+                    mapel,
+
+                    guru
+
+                }
+
+            );
+
+        }
+
+        // ============================
+        // GURU
+        // ============================
+
+        const guruLogin =
+            await bankSoalModel.getGuruByNIP(
+                req.session.user.username
+            );
+
+        if (!guruLogin) {
+
+            return res.send(
+                "Data guru tidak ditemukan."
+            );
+
+        }
+
+        const mapel =
+            await bankSoalModel.getMapelGuru(
+                guruLogin.id
+            );
+
+        res.render(
+
+            "bank-soal/import-word",
+
+            {
+
+                role: "guru",
+
+                guru: [
+
+                    guruLogin
+
+                ],
+
+                mapel
+
+            }
+
+        );
+
+    }
+
+    catch (err) {
+
+        console.log(err);
+
+        res.send(err.message);
+
+    }
 
 };
 
@@ -263,24 +903,72 @@ exports.importWord = async (req, res) => {
 
         req.session.previewSoal = hasilValidasi;
 
-        const mapel = await bankSoalModel.getMapel();
-        const guru = await bankSoalModel.getGuru();
+        let guru;
+let mapel;
 
+// ======================================
+// ADMIN
+// ======================================
+
+if (req.session.user.role === "admin") {
+
+    guru = await bankSoalModel.getGuru();
+    mapel = await bankSoalModel.getMapel();
+
+}
+
+// ======================================
+// GURU
+// ======================================
+
+else {
+
+    const guruLogin =
+        await bankSoalModel.getGuruByNIP(
+            req.session.user.username
+        );
+
+    guru = [guruLogin];
+
+    
+
+    mapel =
+    await bankSoalModel.getMapelGuru(
+        guruLogin.id
+    );
+
+        
+
+}
+
+console.log("======================");
+console.log("ROLE :", req.session.user.role);
+console.log("GURU :", guru);
+console.log("MAPEL :", mapel);
+console.log("======================");
   
 
 res.render("bank-soal/preview-word", {
+
     hasilValidasi,
+
+    guru,
+
     mapel,
-    guru
+
+    role: req.session.user.role
+
 });
 
-    } catch (err) {
+}
 
-        console.log(err);
+catch (err) {
 
-        res.send(err.message);
+    console.log(err);
 
-    }
+    res.send(err.message);
+
+}
 
 };
 
@@ -291,7 +979,56 @@ exports.importDatabase = async (req, res) => {
 
     try {
 
+        console.log("===== IMPORT DATABASE =====");
+        console.log("BODY :", req.body);
+        console.log("PREVIEW :", req.session.previewSoal);
+
         const soal = req.session.previewSoal;
+
+        let guruId = req.body.guru_id;
+        let mapelId = req.body.mapel_id;
+
+        console.log("=================================");
+        console.log("Mapel dari Form :", mapelId);
+        console.log("Guru dari Form  :", guruId);
+        console.log("=================================");
+
+        // ======================================
+        // LOGIN GURU
+        // ======================================
+
+        if (req.session.user.role === "guru") {
+
+            const guruLogin =
+                await bankSoalModel.getGuruByNIP(
+                    req.session.user.username
+                );
+
+            console.log("===== DATA GURU LOGIN =====");
+            console.log(guruLogin);
+
+            guruId = guruLogin.id;
+
+            console.log("Guru ID Login :", guruId);
+            console.log("Mapel ID      :", mapelId);
+
+            const boleh =
+                await bankSoalModel.isGuruMengajarMapel(
+                    guruLogin.id,
+                    mapelId
+                );
+
+            console.log("HASIL VALIDASI :", boleh);
+
+            if (!boleh) {
+
+                return res.send(
+                    "Anda tidak memiliki akses ke mata pelajaran tersebut."
+                );
+
+            }
+
+        }
 
         if (!soal || soal.length === 0) {
             return res.send("Tidak ada data untuk diimport.");
@@ -299,12 +1036,15 @@ exports.importDatabase = async (req, res) => {
 
         for (const item of soal) {
 
+            console.log("IMPORT SOAL:");
+            console.log(item.data);
+
             await bankSoalModel.create({
 
-                mapel_id: req.body.mapel_id,
-                guru_id: req.body.guru_id,
-                jenis: item.data.jenis,
+                mapel_id: mapelId,
+                guru_id: guruId,
 
+                jenis: item.data.jenis,
                 pertanyaan: item.data.pertanyaan,
 
                 pilihan_a: item.data.pilihan_a,
@@ -318,12 +1058,14 @@ exports.importDatabase = async (req, res) => {
                 bobot: item.data.bobot,
 
                 gambar: item.data.gambar,
-                audio: item.data.audi,
+                audio: item.data.audio,
                 video: item.data.video,
 
                 status: 1
 
             });
+
+            console.log("✓ Berhasil import 1 soal");
 
         }
 

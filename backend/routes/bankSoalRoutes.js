@@ -13,44 +13,51 @@ const fs = require("fs");
 // PASTIKAN FOLDER UPLOAD ADA
 // ======================================
 
-const uploadFolder = path.join(__dirname, "../../uploads/word");
+const uploadWordFolder = path.join(__dirname, "../../uploads/word");
 
-if (!fs.existsSync(uploadFolder)) {
-    fs.mkdirSync(uploadFolder, { recursive: true });
+if (!fs.existsSync(uploadWordFolder)) {
+    fs.mkdirSync(uploadWordFolder, { recursive: true });
 }
 
 // ======================================
-// KONFIGURASI MULTER
+// IMPORT WORD
 // ======================================
 
-const storage = multer.diskStorage({
+const storageWord = multer.diskStorage({
 
     destination: function (req, file, cb) {
-        cb(null, uploadFolder);
+
+        cb(null, uploadWordFolder);
+
     },
 
     filename: function (req, file, cb) {
 
-        const namaFile =
+        cb(
+
+            null,
+
             Date.now() +
             "-" +
-            file.originalname.replace(/\s+/g, "_");
+            file.originalname.replace(/\s+/g, "_")
 
-        cb(null, namaFile);
+        );
 
     }
 
 });
 
-const upload = multer({
+const uploadWord = multer({
 
-    storage,
+    storage: storageWord,
 
     fileFilter: (req, file, cb) => {
 
         if (
+
             file.mimetype ===
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
         ) {
 
             cb(null, true);
@@ -71,13 +78,13 @@ const upload = multer({
 
 router.get(
     "/",
-    auth.isAuthenticated,
+    auth.isGuruOrAdmin,
     bankSoalController.index
 );
 
 router.get(
     "/mapel/:id",
-    auth.isAuthenticated,
+    auth.isGuruOrAdmin,
     bankSoalController.getByMapel
 );
 
@@ -87,7 +94,7 @@ router.get(
 
 router.get(
     "/tambah",
-    auth.isAuthenticated,
+    auth.isGuruOrAdmin,
     bankSoalController.tambah
 );
 
@@ -96,10 +103,32 @@ router.get(
 // ======================================
 
 router.post(
+
     "/simpan",
-    auth.isAuthenticated,
-    uploadSoal.single("gambar"),
+
+    auth.isGuruOrAdmin,
+
+    uploadSoal.fields([
+
+        {
+            name: "gambar",
+            maxCount: 1
+        },
+
+        {
+            name: "audio",
+            maxCount: 1
+        },
+
+        {
+            name: "video",
+            maxCount: 1
+        }
+
+    ]),
+
     bankSoalController.simpan
+
 );
 
 // ======================================
@@ -107,9 +136,13 @@ router.post(
 // ======================================
 
 router.get(
+
     "/edit/:id",
-    auth.isAuthenticated,
+
+    auth.isGuruOrAdmin,
+
     bankSoalController.edit
+
 );
 
 // ======================================
@@ -117,10 +150,32 @@ router.get(
 // ======================================
 
 router.post(
+
     "/update/:id",
-    auth.isAuthenticated,
-    uploadSoal.single("gambar"),
+
+    auth.isGuruOrAdmin,
+
+    uploadSoal.fields([
+
+        {
+            name: "gambar",
+            maxCount: 1
+        },
+
+        {
+            name: "audio",
+            maxCount: 1
+        },
+
+        {
+            name: "video",
+            maxCount: 1
+        }
+
+    ]),
+
     bankSoalController.update
+
 );
 
 // ======================================
@@ -128,9 +183,13 @@ router.post(
 // ======================================
 
 router.get(
+
     "/hapus/:id",
-    auth.isAuthenticated,
+
+    auth.isGuruOrAdmin,
+
     bankSoalController.hapus
+
 );
 
 // ======================================
@@ -138,25 +197,39 @@ router.get(
 // ======================================
 
 router.get(
+
     "/import-word",
-    auth.isAuthenticated,
+
+    auth.isGuruOrAdmin,
+
     bankSoalController.showImportWord
+
 );
 
 router.post(
+
     "/import-word",
-    auth.isAuthenticated,
-    upload.single("fileWord"),
+
+    auth.isGuruOrAdmin,
+
+    uploadWord.single("fileWord"),
+
     bankSoalController.importWord
+
 );
 
 // ======================================
-// IMPORT KE DATABASE
+// IMPORT DATABASE
 // ======================================
+
 router.post(
+
     "/import-database",
-    auth.isAuthenticated,
+
+    auth.isGuruOrAdmin,
+
     bankSoalController.importDatabase
+
 );
 
 module.exports = router;

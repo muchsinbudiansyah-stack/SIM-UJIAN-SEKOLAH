@@ -38,6 +38,17 @@ app.use(
 );
 
 // ======================================
+// USER GLOBAL UNTUK SEMUA VIEW
+// ======================================
+app.use((req, res, next) => {
+
+    res.locals.user = req.session.user || null;
+
+    next();
+
+});
+
+// ======================================
 // VIEW ENGINE
 // ======================================
 
@@ -75,9 +86,15 @@ const hasilRoutes = require('./backend/routes/hasilRoutes');
 const pesertaRoutes=require("./backend/routes/pesertaRoutes");
 const monitorRoutes = require("./backend/routes/monitorRoutes");
 const rankingRoutes = require("./backend/routes/rankingRoutes");
-const analisisRoutes = require("./backend/routes/analisisRoutes");
+const analisisRoutes = require("./backend/routes/analisisGuruRoutes");
 const laporanRoutes = require("./backend/routes/laporanRoutes");
 const butirRoutes = require("./backend/routes/butirRoutes");
+const guruDashboardRoutes = require("./backend/routes/guruDashboardRoutes");
+const guruBankSoalRoutes = require("./backend/routes/guruBankSoalRoutes");
+const laporanGuruRoutes = require("./backend/routes/laporanGuruRoutes");
+const printRoutes = require("./backend/routes/printRoutes");
+const rankingGuruRoutes = require("./backend/routes/rankingGuruRoutes");
+const analisisGuruRoutes = require("./backend/routes/analisisGuruRoutes");
 
 app.use("/", authRoutes);
 
@@ -105,11 +122,22 @@ app.use("/monitor", monitorRoutes);
 
 app.use("/ranking", rankingRoutes);
 
-app.use("/analisis", analisisRoutes);
+app.use("/admin/analisis", analisisRoutes);
 
 app.use("/laporan", laporanRoutes);
 
 app.use("/butir", butirRoutes);
+
+app.use("/guru/dashboard", guruDashboardRoutes);
+
+app.use("/laporan-guru",laporanGuruRoutes);
+
+app.use("/print",printRoutes);
+
+app.use("/ranking-guru",rankingGuruRoutes);
+
+app.use("/analisis", analisisGuruRoutes);
+
 // ======================================
 // SERVER
 // ======================================

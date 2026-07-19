@@ -291,3 +291,399 @@ exports.delete = (id) => {
     });
 
 };
+
+// ======================================
+// AMBIL GURU BERDASARKAN NIP
+// ======================================
+
+exports.getGuruByNIP = (nip) => {
+
+    return new Promise((resolve, reject) => {
+
+        db.get(
+
+            `
+            SELECT *
+            FROM guru
+            WHERE nip = ?
+            `,
+
+            [nip],
+
+            (err, row) => {
+
+                if (err) {
+
+                    reject(err);
+
+                } else {
+
+                    resolve(row);
+
+                }
+
+            }
+
+        );
+
+    });
+
+};
+
+// ======================================
+// MAPEL YANG DIAJAR GURU
+// ======================================
+exports.getMapelGuru = (guruId) => {
+
+    return new Promise((resolve, reject) => {
+
+        db.all(
+
+            `
+            SELECT
+
+                mapel.id,
+                mapel.nama_mapel
+
+            FROM guru_mapel
+
+            INNER JOIN mapel
+
+                ON guru_mapel.mapel_id = mapel.id
+
+            WHERE guru_mapel.guru_id = ?
+
+            ORDER BY mapel.nama_mapel ASC
+            `,
+
+            [guruId],
+
+            (err, rows) => {
+
+                if (err) {
+
+                    reject(err);
+
+                } else {
+
+                    resolve(rows);
+
+                }
+
+            }
+
+        );
+
+    });
+
+};
+
+// ======================================
+// CEK APAKAH GURU MENGAJAR MAPEL
+// ======================================
+exports.isGuruMengajarMapel = (
+
+    guruId,
+
+    mapelId
+
+) => {
+
+    return new Promise((resolve, reject) => {
+
+        db.get(
+
+            `
+            SELECT id
+            FROM guru_mapel
+            WHERE guru_id = ?
+            AND mapel_id = ?
+            `,
+
+            [
+
+                guruId,
+
+                mapelId
+
+            ],
+
+            (err, row) => {
+
+                if (err) {
+
+                    reject(err);
+
+                } else {
+
+                    resolve(!!row);
+
+                }
+
+            }
+
+        );
+
+    });
+
+};
+
+// ======================================
+// UJIAN BERDASARKAN GURU
+// ======================================
+exports.getByGuru = (guruId) => {
+
+    return new Promise((resolve, reject) => {
+
+        db.all(
+
+            `
+            SELECT
+
+                ujian.*,
+
+                mapel.nama_mapel,
+
+                kelas.nama AS nama_kelas,
+
+                guru.nama AS nama_guru
+
+            FROM ujian
+
+            LEFT JOIN mapel
+                ON ujian.mapel_id = mapel.id
+
+            LEFT JOIN kelas
+                ON ujian.kelas_id = kelas.id
+
+            LEFT JOIN guru
+                ON ujian.guru_id = guru.id
+
+            WHERE ujian.guru_id = ?
+
+            ORDER BY ujian.id DESC
+            `,
+
+            [
+
+                guruId
+
+            ],
+
+            (err, rows) => {
+
+                if (err) {
+
+                    reject(err);
+
+                } else {
+
+                    resolve(rows);
+
+                }
+
+            }
+
+        );
+
+    });
+
+};
+
+// ======================================
+// UJIAN BERDASARKAN GURU + MAPEL
+// ======================================
+exports.getByGuruMapel = (
+
+    guruId,
+
+    mapelId
+
+) => {
+
+    return new Promise((resolve, reject) => {
+
+        let sql =
+
+            `
+            SELECT
+
+                ujian.*,
+
+                mapel.nama_mapel,
+
+                kelas.nama AS nama_kelas,
+
+                guru.nama AS nama_guru
+
+            FROM ujian
+
+            LEFT JOIN mapel
+                ON ujian.mapel_id = mapel.id
+
+            LEFT JOIN kelas
+                ON ujian.kelas_id = kelas.id
+
+            LEFT JOIN guru
+                ON ujian.guru_id = guru.id
+
+            WHERE ujian.guru_id = ?
+            `;
+
+        const params = [
+
+            guruId
+
+        ];
+
+        if (mapelId) {
+
+            sql +=
+
+                `
+                AND ujian.mapel_id = ?
+                `;
+
+            params.push(mapelId);
+
+        }
+
+        sql +=
+
+            `
+            ORDER BY ujian.tanggal DESC,
+                     ujian.jam_mulai ASC
+            `;
+
+        db.all(
+
+            sql,
+
+            params,
+
+            (err, rows) => {
+
+                if (err) {
+
+                    reject(err);
+
+                } else {
+
+                    resolve(rows);
+
+                }
+
+            }
+
+        );
+
+    });
+
+};
+
+// ======================================
+// DATA GURU LOGIN
+// ======================================
+exports.getGuruLogin = (username) => {
+
+    return new Promise((resolve, reject) => {
+
+        db.get(
+
+            `
+            SELECT *
+            FROM guru
+            WHERE nip = ?
+            `,
+
+            [username],
+
+            async (err, guru) => {
+
+                if (err) {
+
+                    return reject(err);
+
+                }
+
+                if (!guru) {
+
+                    return resolve(null);
+
+                }
+
+                try {
+
+                    guru.mapel_list =
+                        await exports.getMapelGuru(
+                            guru.id
+                        );
+
+                    resolve(guru);
+
+                } catch (e) {
+
+                    reject(e);
+
+                }
+
+            }
+
+        );
+
+    });
+
+};
+
+// ======================================
+// MAPEL PERTAMA GURU
+// ======================================
+exports.getFirstMapelGuru = async (guruId) => {
+
+    const mapel =
+        await exports.getMapelGuru(
+            guruId
+        );
+
+    if (!mapel.length) {
+
+        return null;
+
+    }
+
+    return mapel[0];
+
+};
+
+// ======================================
+// APAKAH GURU MENGAJAR
+// LEBIH DARI SATU MAPEL
+// ======================================
+exports.hasMultipleMapel = async (guruId) => {
+
+    const mapel =
+        await exports.getMapelGuru(
+            guruId
+        );
+
+    return mapel.length > 1;
+
+};
+
+// ======================================
+// NAMA MAPEL GURU
+// ======================================
+exports.getNamaMapelGuru = async (guruId) => {
+
+    const mapel =
+        await exports.getMapelGuru(
+            guruId
+        );
+
+    return mapel.map(
+
+        item => item.nama_mapel
+
+    ).join(", ");
+
+};

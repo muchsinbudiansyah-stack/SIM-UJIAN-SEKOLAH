@@ -18,25 +18,7 @@ exports.index = async (req, res) => {
 
         };
 
-        let data;
-
-        if (
-
-            filter.kelas ||
-
-            filter.mapel ||
-
-            filter.ujian
-
-        ) {
-
-            data = await laporanModel.filterLaporan(filter);
-
-        } else {
-
-            data = await laporanModel.getSemuaHasil();
-
-        }
+        const data = await laporanModel.getHasilFilter(filter);
 
         const daftarKelas = await laporanModel.getKelas();
 

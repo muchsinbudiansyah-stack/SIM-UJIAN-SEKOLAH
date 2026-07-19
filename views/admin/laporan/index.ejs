@@ -31,6 +31,7 @@
                     </label>
 
                     <select
+                    id="kelas"
 
                         name="kelas"
 
@@ -69,6 +70,7 @@
                     </label>
 
                     <select
+                    id="mapel"
 
                         name="mapel"
 
@@ -108,6 +110,8 @@
 
                     <select
 
+                    id="ujian"
+
                         name="ujian"
 
                         class="form-select">
@@ -120,17 +124,15 @@
 
                         <% daftarUjian.forEach(u=>{ %>
 
-                        <option
+<option
+    value="<%= u.id %>"
+    <%= filter.ujian==u.id ? "selected" : "" %>>
 
-                            value="<%= u.id %>"
+    <%= u.nama_mapel %> | <%= u.nama_ujian %>
 
-                            <%= filter.ujian==u.id ? "selected" : "" %>>
+</option>
 
-                            <%= u.nama_ujian %>
-
-                        </option>
-
-                        <% }) %>
+<% }) %>
 
                     </select>
 
@@ -158,7 +160,7 @@
 
 <button
     type="button"
-    class="btn btn-success"
+    class="btn btn-success me-2"
     onclick="window.print()">
 
     <i class="bi bi-printer"></i>
@@ -166,6 +168,27 @@
     Print
 
 </button>
+
+<a
+id="btnPDF"
+href="#"
+target="_blank"
+class="btn btn-danger">
+
+<i class="bi bi-file-earmark-pdf"></i>
+
+PDF
+
+<a
+id="btnExcel"
+href="#"
+class="btn btn-success">
+
+<i class="bi bi-file-earmark-excel"></i>
+
+Excel
+
+</a>
 
                 </div>
 
@@ -304,5 +327,62 @@
 }
 
 </style>
+
+<script>
+
+function updatePDFLink(){
+
+    const kelas =
+        document.getElementById("kelas")?.value || "";
+
+    const mapel =
+        document.getElementById("mapel")?.value || "";
+
+    const ujian =
+        document.getElementById("ujian")?.value || "";
+
+    const pdfURL =
+    "/laporan/pdf?" +
+    "kelas=" + encodeURIComponent(kelas) +
+    "&mapel=" + encodeURIComponent(mapel) +
+    "&ujian=" + encodeURIComponent(ujian);
+
+document
+    .getElementById("btnPDF")
+    .href = pdfURL;
+
+const excelURL =
+    "/laporan/excel?" +
+    "kelas=" + encodeURIComponent(kelas) +
+    "&mapel=" + encodeURIComponent(mapel) +
+    "&ujian=" + encodeURIComponent(ujian);
+
+document
+    .getElementById("btnExcel")
+    .href = excelURL;
+
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    updatePDFLink();
+
+    document
+        .querySelectorAll("select")
+        .forEach(item=>{
+
+            item.addEventListener(
+
+                "change",
+
+                updatePDFLink
+
+            );
+
+        });
+
+});
+
+</script>
 
 <%- include("../../partials/footer") %>

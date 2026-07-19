@@ -1,0 +1,292 @@
+<%- include("../../partials/header",{title:"Ranking"}) %>
+
+<%- include("../../partials/sidebar") %>
+
+<div class="main">
+
+<h2 class="fw-bold">
+
+🏆 Ranking Nilai
+
+</h2>
+
+<div class="card shadow-sm mb-4">
+
+<div class="card-body">
+
+    <div class="d-flex justify-content-end mb-3">
+
+<a
+
+href="/ranking-guru/excel/<%= ujianDipilih %>"
+
+class="btn btn-success btn-sm me-2">
+
+<i class="bi bi-file-earmark-excel"></i>
+
+Excel
+
+</a>
+
+<a
+
+href="/ranking-guru/pdf/<%= ujianDipilih %>"
+
+target="_blank"
+
+class="btn btn-danger btn-sm me-2">
+
+<i class="bi bi-file-earmark-pdf"></i>
+
+PDF
+
+</a>
+
+<a
+
+href="/ranking-guru/print/<%= ujianDipilih %>"
+
+target="_blank"
+
+class="btn btn-primary btn-sm">
+
+<i class="bi bi-printer"></i>
+
+Print
+
+</a>
+
+</div>
+
+<form>
+
+<div class="row">
+
+<div class="col-md-6">
+
+<select
+name="ujian"
+class="form-select">
+
+<option value="">
+
+Pilih Ujian
+
+</option>
+
+<% daftarUjian.forEach(item=>{ %>
+
+<option
+value="<%= item.id %>"
+<%= ujianDipilih==item.id ? "selected":"" %>>
+
+<%= item.nama_mapel %> | <%= item.nama_ujian %>
+
+</option>
+
+<% }) %>
+
+</select>
+
+</div>
+
+<div class="col-md-2">
+
+<button
+class="btn btn-primary">
+
+Tampilkan
+
+</button>
+
+</div>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+<% if(ranking.length>0){ %>
+
+<div class="card shadow-sm">
+
+<div class="card-body">
+
+<table
+id="tabelRanking"
+class="table table-striped table-hover">
+
+<thead class="table-primary">
+
+<tr>
+
+<th>Rank</th>
+
+<th>Nama</th>
+
+<th>NISN</th>
+
+<th>Kelas</th>
+
+<th>Nilai</th>
+
+<th>Benar</th>
+
+<th>Salah</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<%
+
+let rank = 1;
+
+let lastNilai = null;
+
+let lastRank = 1;
+
+ranking.forEach((item,index)=>{
+
+if(item.nilai != lastNilai){
+
+    lastRank = index + 1;
+
+    lastNilai = item.nilai;
+
+}
+
+%>
+
+<tr>
+
+<td class="text-center">
+
+<%
+
+if(lastRank==1){
+
+%>
+
+🥇
+
+<%
+
+}else if(lastRank==2){
+
+%>
+
+🥈
+
+<%
+
+}else if(lastRank==3){
+
+%>
+
+🥉
+
+<%
+
+}else{
+
+%>
+
+<%= lastRank %>
+
+<%
+
+}
+
+%>
+
+</td>
+
+<td>
+
+<%= item.nama %>
+
+</td>
+
+<td>
+
+<%= item.nisn %>
+
+</td>
+
+<td>
+
+<%= item.kelas %>
+
+</td>
+
+<td>
+
+<span class="badge bg-success fs-6">
+
+<%= item.nilai %>
+
+</span>
+
+</td>
+
+<td class="text-center">
+
+<span class="badge bg-primary">
+
+<%= item.benar %>
+
+</span>
+
+</td>
+
+<td class="text-center">
+
+<span class="badge bg-danger">
+
+<%= item.salah %>
+
+</span>
+
+</td>
+
+</tr>
+
+<%
+
+})
+
+%>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<% } %>
+
+</div>
+
+<script>
+
+$(function(){
+
+$("#tabelRanking").DataTable({
+
+pageLength:10
+
+});
+
+});
+
+</script>
+
+<%- include("../../partials/footer") %>

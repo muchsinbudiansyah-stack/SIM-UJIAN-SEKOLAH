@@ -2,63 +2,340 @@
 <%- include("../partials/sidebar") %>
 
 <div class="main">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2>Soal: <%= mapel.nama_mapel %></h2>
-            <a href="/bank-soal" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left"></i> Kembali ke folder
-            </a>
+
+<div class="row mb-4">
+
+    <div class="col-md-8">
+
+        <h2 class="fw-bold">
+
+            <i class="bi bi-journal-text"></i>
+
+            Bank Soal
+
+        </h2>
+
+        <div class="text-muted">
+
+            Mata Pelajaran :
+            <strong><%= mapel.nama_mapel %></strong>
+
         </div>
+
     </div>
+
+    <div class="col-md-4 text-end">
+
+        <a href="/bank-soal"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Kembali
+
+        </a>
+
+        <a href="/bank-soal/tambah"
+           class="btn btn-primary">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Tambah Soal
+
+        </a>
+
+    </div>
+
+</div>
+
+<div class="row mb-4">
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <h6 class="text-muted">
+
+                    Total Soal
+
+                </h6>
+
+                <h2 class="fw-bold">
+
+                    <%= soal.length %>
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <h6 class="text-muted">
+
+                    Soal Aktif
+
+                </h6>
+
+                <h2 class="text-success fw-bold">
+
+                    <%= soal.filter(s=>s.status==1).length %>
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <h6 class="text-muted">
+
+                    Soal Nonaktif
+
+                </h6>
+
+                <h2 class="text-danger fw-bold">
+
+                    <%= soal.filter(s=>s.status==0).length %>
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
     <div class="card shadow-sm">
         <div class="card-body">
-            <table class="table table-bordered table-hover align-middle">
+            <div class="table-responsive">
+            <table id="tabelSoal"
+       class="table table-striped table-hover align-middle w-100">
                 <thead class="table-primary">
-                    <tr>
-                        <th width="60">No</th>
-                        <th>Pertanyaan</th>
-                        <th>Jenis</th>
-                        <th>Bobot</th>
-                        <th>Status</th>
-                        <th width="200">Aksi</th>
-                    </tr>
-                </thead>
+
+<tr>
+
+<th width="60" class="text-center">
+
+No
+
+</th>
+
+<th>
+
+Pertanyaan
+
+</th>
+
+<th width="170">
+
+Guru
+
+</th>
+
+<th width="90" class="text-center">
+
+Jenis
+
+</th>
+
+<th width="80" class="text-center">
+
+Bobot
+
+</th>
+
+<th width="110" class="text-center">
+
+Status
+
+</th>
+
+<th width="130" class="text-center">
+
+Aksi
+
+</th>
+
+</tr>
+
+</thead>
                 <tbody>
-                    <% if(soal.length===0){ %>
-                        <tr>
-                            <td colspan="6" class="text-center">Belum ada soal di mapel ini.</td>
-                        </tr>
-                    <% } %>
-                    <% soal.forEach((item,index)=>{ %>
-                        <tr>
-                            <td><%= index+1 %></td>
-                            <td><%= item.pertanyaan.substring(0, 50) %>...</td>
-                            <td>
-                                <span class="badge bg-primary"><%= item.jenis %></span>
-                            </td>
-                            <td><%= item.bobot %></td>
-                            <td>
-                                <% if(item.status==1){ %>
-                                    <span class="badge bg-success">Aktif</span>
-                                <% } else { %>
-                                    <span class="badge bg-secondary">Nonaktif</span>
-                                <% } %>
-                            </td>
-                            <td>
-                                <a href="/bank-soal/edit/<%= item.id %>" class="btn btn-warning btn-sm">
-                                    <i class="bi bi-pencil-square"></i> Edit
-                                </a>
-                                <a href="/bank-soal/hapus/<%= item.id %>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus soal ini?')">
-                                    <i class="bi bi-trash"></i> Hapus
-                                </a>
-                            </td>
-                        </tr>
-                    <% }) %>
-                </tbody>
+
+<% if(soal.length===0){ %>
+
+<tr>
+
+<td colspan="7" class="text-center">
+
+Belum ada soal.
+
+</td>
+
+</tr>
+
+<% } %>
+
+<% soal.forEach((item,index)=>{ %>
+
+<tr>
+
+<td class="text-center">
+
+<%= index+1 %>
+
+</td>
+
+<td style="min-width:420px;">
+
+<%= item.pertanyaan.length>80
+? item.pertanyaan.substring(0,80)+"..."
+: item.pertanyaan %>
+
+</td>
+
+<td>
+
+<%= item.nama %>
+
+</td>
+
+<td class="text-center">
+
+<span class="badge bg-primary">
+
+<%= item.jenis %>
+
+</span>
+
+</td>
+
+<td class="text-center">
+
+<%= item.bobot %>
+
+</td>
+
+<td class="text-center">
+
+<% if(item.status==1){ %>
+
+<span class="badge bg-success">
+
+Aktif
+
+</span>
+
+<% }else{ %>
+
+<span class="badge bg-secondary">
+
+Nonaktif
+
+</span>
+
+<% } %>
+
+</td>
+
+<td class="text-center">
+
+<a
+href="/bank-soal/edit/<%= item.id %>"
+class="btn btn-warning btn-sm">
+
+<i class="bi bi-pencil"></i>
+
+</a>
+
+<a
+href="/bank-soal/hapus/<%= item.id %>"
+class="btn btn-danger btn-sm"
+onclick="return confirm('Yakin hapus soal?')">
+
+<i class="bi bi-trash"></i>
+
+</a>
+
+</td>
+
+</tr>
+
+<% }) %>
+
+</tbody>
             </table>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+
+$(function(){
+
+    const table = $("#tabelSoal").DataTable({
+
+        destroy:true,
+
+        autoWidth:false,
+
+        responsive:false,
+
+        paging:true,
+
+        searching:true,
+
+        ordering:true,
+
+        info:true,
+
+        pageLength:10,
+
+        language:{
+
+            search:"Cari :",
+
+            lengthMenu:"Tampilkan _MENU_ data",
+
+            zeroRecords:"Data tidak ditemukan",
+
+            info:"Menampilkan _START_ - _END_ dari _TOTAL_ data",
+
+            paginate:{
+
+                previous:"←",
+
+                next:"→"
+
+            }
+
+        }
+
+    });
+
+    table.columns.adjust().draw();
+
+});
+
+</script>
 
 <%- include("../partials/footer") %>

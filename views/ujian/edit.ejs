@@ -12,7 +12,7 @@
 
             <small class="text-muted">
 
-                Ubah konfigurasi ujian
+                Ubah Konfigurasi Ujian CBT
 
             </small>
 
@@ -30,7 +30,11 @@
 
                     <div class="col-md-6 mb-3">
 
-                        <label>Nama Ujian</label>
+                        <label class="form-label">
+
+                            Nama Ujian
+
+                        </label>
 
                         <input
                             type="text"
@@ -43,7 +47,11 @@
 
                     <div class="col-md-6 mb-3">
 
-                        <label>Mata Pelajaran</label>
+                        <label class="form-label">
+
+                            Mata Pelajaran
+
+                        </label>
 
                         <select
                             name="mapel_id"
@@ -54,7 +62,7 @@
 
                                 <option
                                     value="<%= item.id %>"
-                                    <%= item.id==ujian.mapel_id ? "selected" : "" %>>
+                                    <%= Number(item.id)===Number(ujian.mapel_id) ? "selected" : "" %>>
 
                                     <%= item.nama_mapel %>
 
@@ -68,7 +76,11 @@
 
                     <div class="col-md-6 mb-3">
 
-                        <label>Kelas</label>
+                        <label class="form-label">
+
+                            Kelas
+
+                        </label>
 
                         <select
                             name="kelas_id"
@@ -79,7 +91,7 @@
 
                                 <option
                                     value="<%= item.id %>"
-                                    <%= item.id==ujian.kelas_id ? "selected" : "" %>>
+                                    <%= Number(item.id)===Number(ujian.kelas_id) ? "selected" : "" %>>
 
                                     <%= item.nama %>
 
@@ -91,9 +103,15 @@
 
                     </div>
 
+                    <% if(role==="admin"){ %>
+
                     <div class="col-md-6 mb-3">
 
-                        <label>Guru</label>
+                        <label class="form-label">
+
+                            Guru
+
+                        </label>
 
                         <select
                             name="guru_id"
@@ -104,7 +122,7 @@
 
                                 <option
                                     value="<%= item.id %>"
-                                    <%= item.id==ujian.guru_id ? "selected" : "" %>>
+                                    <%= Number(item.id)===Number(ujian.guru_id) ? "selected" : "" %>>
 
                                     <%= item.nama %>
 
@@ -116,9 +134,38 @@
 
                     </div>
 
+                    <% } else { %>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Guru
+
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="<%= guru[0].nama %>"
+                            readonly>
+
+                        <input
+                            type="hidden"
+                            name="guru_id"
+                            value="<%= guru[0].id %>">
+
+                    </div>
+
+                    <% } %>
+
                     <div class="col-md-4 mb-3">
 
-                        <label>Tanggal</label>
+                        <label class="form-label">
+
+                            Tanggal
+
+                        </label>
 
                         <input
                             type="date"
@@ -131,7 +178,11 @@
 
                     <div class="col-md-4 mb-3">
 
-                        <label>Jam Mulai</label>
+                        <label class="form-label">
+
+                            Jam Mulai
+
+                        </label>
 
                         <input
                             type="time"
@@ -144,7 +195,11 @@
 
                     <div class="col-md-4 mb-3">
 
-                        <label>Jam Selesai</label>
+                        <label class="form-label">
+
+                            Jam Selesai
+
+                        </label>
 
                         <input
                             type="time"
@@ -157,33 +212,47 @@
 
                     <div class="col-md-4 mb-3">
 
-                        <label>Durasi (Menit)</label>
+                        <label class="form-label">
+
+                            Durasi (Menit)
+
+                        </label>
 
                         <input
                             type="number"
                             name="durasi"
                             class="form-control"
                             value="<%= ujian.durasi %>"
+                            min="1"
                             required>
 
                     </div>
 
                     <div class="col-md-4 mb-3">
 
-                        <label>Jumlah Soal</label>
+                        <label class="form-label">
+
+                            Jumlah Soal
+
+                        </label>
 
                         <input
                             type="number"
                             name="jumlah_soal"
                             class="form-control"
                             value="<%= ujian.jumlah_soal %>"
+                            min="1"
                             required>
 
                     </div>
 
                     <div class="col-md-4 mb-3">
 
-                        <label>Token</label>
+                        <label class="form-label">
+
+                            Token
+
+                        </label>
 
                         <input
                             type="text"
@@ -235,6 +304,31 @@
 
                     </div>
 
+                    <% if(role==="admin"){ %>
+
+                    <div class="col-md-12 mb-3">
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                name="status"
+                                value="1"
+                                <%= ujian.status==1 ? "checked" : "" %>>
+
+                            <label class="form-check-label">
+
+                                Ujian Aktif
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <% } %>
+
                 </div>
 
                 <hr>
@@ -242,6 +336,8 @@
                 <button
                     type="submit"
                     class="btn btn-primary">
+
+                    <i class="bi bi-save"></i>
 
                     Update Ujian
 
